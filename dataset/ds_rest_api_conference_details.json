@@ -1,0 +1,24 @@
+{
+	"name": "ds_rest_api_conference_details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_rest_api_conferencedetails",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_relative_url": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().p_relative_url",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

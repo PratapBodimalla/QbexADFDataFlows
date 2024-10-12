@@ -1,0 +1,125 @@
+{
+	"name": "pl_load_country_codes_staging",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Country data from Web Page to Blob Staging",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "WebSource"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "COUNTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "country_name",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COUNTRY CODE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "country_code",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ISO CODES",
+									"type": "String"
+								},
+								"sink": {
+									"name": "iso_codes",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "POPULATION",
+									"type": "String"
+								},
+								"sink": {
+									"name": "population",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AREA KM2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "area_in_km2",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "GDP $USD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "gdp_in_usd",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_web_html_country_table",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_ipl_blob_csv",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "ipl"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-15T07:07:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

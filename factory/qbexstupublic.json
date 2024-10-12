@@ -1,0 +1,17 @@
+{
+	"name": "qbexstupublic",
+	"properties": {
+		"globalParameters": {
+			"p_env": {
+				"type": "string",
+				"value": "dev"
+			}
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d40a354c-177d-48c5-8ef9-5a9cd69655a8",
+		"tenantId": "90a19f08-ad87-41bc-9b3d-d6d7309749b9"
+	}
+}

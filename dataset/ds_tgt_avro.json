@@ -1,0 +1,19 @@
+{
+	"name": "ds_tgt_avro",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_qbexsilveradls",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Avro",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "mylookupcontainer"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

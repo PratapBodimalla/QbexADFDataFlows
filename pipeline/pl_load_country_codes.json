@@ -1,9 +1,9 @@
 {
-	"name": "pipeline1",
+	"name": "pl_load_country_codes",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy Json file as CSV",
+				"name": "Copy Country Code csv file",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -16,14 +16,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "JsonSource",
+						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "JsonReadSettings"
+							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
@@ -43,92 +43,85 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['studentid']"
+									"name": "COUNTRY",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "studentid"
+									"name": "country_name",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['studentname']"
+									"name": "COUNTRY CODE",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "studentname"
+									"name": "country_code",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['age']"
+									"name": "ISO CODES",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "age"
+									"name": "ISO CODES",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['email']"
+									"name": "POPULATION",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "email"
+									"name": "POPULATION",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['address']['city']"
+									"name": "AREA KM2",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "city"
+									"name": "AREA KM2",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['address']['pincode']"
+									"name": "GDP_USD",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "pincode"
-								}
-							},
-							{
-								"source": {
-									"path": "$['address']['country']['countrycode']"
-								},
-								"sink": {
-									"name": "countrycode"
-								}
-							},
-							{
-								"source": {
-									"path": "$['address']['country']['countryname']"
-								},
-								"sink": {
-									"name": "countryname"
-								}
-							},
-							{
-								"source": {
-									"path": "$['address']['country']['country_iso_code']"
-								},
-								"sink": {
-									"name": "country_iso_code"
-								}
-							},
-							{
-								"source": {
-									"path": "$['technologies_known']"
-								},
-								"sink": {
-									"name": "items"
+									"name": "GDP_USD",
+									"type": "String",
+									"physicalType": "String"
 								}
 							}
 						],
-						"collectionReference": "",
-						"mapComplexValuesToString": true
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_src_blob_json",
+						"referenceName": "ds_csv_country_codes",
 						"type": "DatasetReference"
 					}
 				],
@@ -140,8 +133,11 @@
 				]
 			}
 		],
+		"folder": {
+			"name": "how-tos"
+		},
 		"annotations": [],
-		"lastPublishTime": "2024-09-15T06:05:55Z"
+		"lastPublishTime": "2024-09-14T03:14:33Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

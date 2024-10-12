@@ -1,0 +1,33 @@
+{
+	"name": "ds_csv_qbexsilveradls",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_qbexsilveradls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_TargetFileName": {
+				"type": "string",
+				"defaultValue": "ipl_matches_transformed_param.csv"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().p_TargetFileName",
+					"type": "Expression"
+				},
+				"fileSystem": "mycontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

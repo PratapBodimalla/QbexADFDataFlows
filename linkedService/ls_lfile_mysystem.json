@@ -1,0 +1,17 @@
+{
+	"name": "ls_lfile_mysystem",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "\\\\DESKTOP-1TNSR83\\Users\\bodim\\qbex-adf-student-docs\\Data_files",
+			"userId": "bodimall.reddy@outlook.com",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1YzIyZWEwZS1jODA3LTQxNGEtYTlhNi1hMTI0OGVhMmE1YjciLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IRSelfHostedMyLocalSystem",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

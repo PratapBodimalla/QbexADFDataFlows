@@ -1,0 +1,88 @@
+{
+	"name": "dflow_auto_inc_005",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "studentlogs",
+						"type": "DatasetReference"
+					},
+					"name": "sourcestudentlogs"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "targetlogs",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Update_Timestamp as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     enableCdc: true,",
+				"     mode: 'read',",
+				"     skipInitialLoad: false,",
+				"     waterMarkColumn: 'Update_Timestamp',",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourcestudentlogs",
+				"sourcestudentlogs select(mapColumn(",
+				"          StudentID,",
+				"          StudentName,",
+				"          City,",
+				"          Country,",
+				"          Age,",
+				"          Email,",
+				"          Created_Timestamp,",
+				"          Update_Timestamp",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 alterRow(upsertIf(StudentID>0)) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Update_Timestamp as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['StudentID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

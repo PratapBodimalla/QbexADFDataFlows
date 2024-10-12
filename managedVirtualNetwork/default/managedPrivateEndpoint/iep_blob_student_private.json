@@ -1,0 +1,10 @@
+{
+	"name": "iep_blob_student_private",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/606c1d8c-c2ae-4532-8d5a-690c0c5a2d21/resourceGroups/qbexadf/providers/Microsoft.Storage/storageAccounts/qbexstudentblobprivate",
+		"groupId": "blob",
+		"fqdns": [
+			"qbexstudentblobprivate.blob.core.windows.net"
+		]
+	}
+}

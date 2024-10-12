@@ -1,0 +1,23 @@
+{
+	"name": "ds_http_venue_details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_github",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "/PratapBodimalla/qbex-adf-student-docs/raw/main/Data_files/ipl_files/single_files/csv/ipl_matches.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

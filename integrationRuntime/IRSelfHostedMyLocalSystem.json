@@ -1,0 +1,6 @@
+{
+	"name": "IRSelfHostedMyLocalSystem",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

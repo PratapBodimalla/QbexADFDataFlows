@@ -1,0 +1,49 @@
+{
+	"name": "SourceDataset_okt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexdemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "country_codes.csv",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "COUNTRY",
+				"type": "String"
+			},
+			{
+				"name": "COUNTRY CODE",
+				"type": "String"
+			},
+			{
+				"name": "ISO CODES",
+				"type": "String"
+			},
+			{
+				"name": "POPULATION",
+				"type": "String"
+			},
+			{
+				"name": "AREA KM2",
+				"type": "String"
+			},
+			{
+				"name": "GDP_USD",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

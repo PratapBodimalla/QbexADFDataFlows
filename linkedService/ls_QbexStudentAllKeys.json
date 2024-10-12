@@ -1,0 +1,11 @@
+{
+	"name": "ls_QbexStudentAllKeys",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://QbexStudentAllKeys.vault.azure.net/"
+		}
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"name": "pipeline2",
+	"name": "pipeline3",
 	"properties": {
 		"activities": [
 			{
@@ -16,19 +16,22 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow1",
+						"referenceName": "dflow_demo_003_cdc",
 						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Fine",
+					"continuationSettings": {
+						"customizedCheckpointKey": "5d5e5487-b439-4fcb-a11a-4a03e642bd94"
+					}
 				}
 			}
 		],
 		"annotations": [],
-		"lastPublishTime": "2024-09-22T03:36:05Z"
+		"lastPublishTime": "2024-09-22T05:22:27Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

@@ -1,0 +1,51 @@
+{
+	"name": "ds_local_coutry_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_lfile_mysystem",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "how-tos"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": "country_codes.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "COUNTRY",
+				"type": "String"
+			},
+			{
+				"name": "COUNTRY CODE",
+				"type": "String"
+			},
+			{
+				"name": "ISO CODES",
+				"type": "String"
+			},
+			{
+				"name": "POPULATION",
+				"type": "String"
+			},
+			{
+				"name": "AREA KM2",
+				"type": "String"
+			},
+			{
+				"name": "GDP_USD",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

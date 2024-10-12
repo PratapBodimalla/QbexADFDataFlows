@@ -1,0 +1,27 @@
+{
+	"name": "tr_storage_event",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_demo_params_001",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"p_tr_filename": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/storageevent/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/606c1d8c-c2ae-4532-8d5a-690c0c5a2d21/resourceGroups/QbexPratapResources/providers/Microsoft.Storage/storageAccounts/qbexblobstoragedemofiles",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"name": "ls_pvt_blob_src_country",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_private",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "how-tos"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "country_codes.csv",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

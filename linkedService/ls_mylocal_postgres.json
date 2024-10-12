@@ -1,0 +1,29 @@
+{
+	"name": "ls_mylocal_postgres",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "PostgreSqlV2",
+		"typeProperties": {
+			"server": "172.31.80.1",
+			"port": 5432,
+			"database": "postgres",
+			"username": "postgres",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_QbexStudentAllKeys",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "postgrespassword",
+				"secretVersion": "eec3625c0e00435a8c5b7235e43f8a2b"
+			},
+			"sslMode": 2,
+			"authenticationType": "Basic"
+		},
+		"connectVia": {
+			"referenceName": "IRSelfHostedMyLocalSystem",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

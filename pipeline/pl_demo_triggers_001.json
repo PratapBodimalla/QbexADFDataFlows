@@ -1,0 +1,51 @@
+{
+	"name": "pl_demo_triggers_001",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 15
+				}
+			},
+			{
+				"name": "Start Time",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_sche_time",
+					"value": "\"dummy\""
+				}
+			}
+		],
+		"variables": {
+			"v_sche_time": {
+				"type": "String"
+			},
+			"v_win_start": {
+				"type": "String"
+			},
+			"v_window_end": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-21T05:45:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

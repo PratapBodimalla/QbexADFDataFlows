@@ -1,0 +1,346 @@
+{
+	"name": "cdcdemo002",
+	"properties": {
+		"SourceConnectionsInfo": [
+			{
+				"SourceEntities": [
+					{
+						"name": "dbo.Student_Source_001",
+						"properties": {
+							"schema": [
+								{
+									"name": "StudentID",
+									"dataType": "integer"
+								},
+								{
+									"name": "StudentName",
+									"dataType": "string"
+								},
+								{
+									"name": "City",
+									"dataType": "string"
+								},
+								{
+									"name": "Country",
+									"dataType": "string"
+								},
+								{
+									"name": "Age",
+									"dataType": "integer"
+								},
+								{
+									"name": "Email",
+									"dataType": "string"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "schemaName",
+									"value": "dbo"
+								},
+								{
+									"name": "tableName",
+									"value": "Student_Source_001"
+								},
+								{
+									"name": "enableNativeCdc",
+									"value": true
+								},
+								{
+									"name": "netChanges",
+									"value": true
+								},
+								{
+									"name": "allowSchemaDrift",
+									"value": false
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": false
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "ils_cdc_sql",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureSqlDatabase",
+					"type": "linkedservicetype",
+					"isInlineDataset": true,
+					"commonDslConnectorProperties": [
+						{
+							"name": "allowSchemaDrift",
+							"value": true
+						},
+						{
+							"name": "inferDriftedColumnTypes",
+							"value": true
+						},
+						{
+							"name": "format",
+							"value": "table"
+						},
+						{
+							"name": "store",
+							"value": "sqlserver"
+						},
+						{
+							"name": "databaseType",
+							"value": "databaseType"
+						},
+						{
+							"name": "database",
+							"value": "database"
+						},
+						{
+							"name": "skipInitialLoad",
+							"value": true
+						}
+					]
+				}
+			}
+		],
+		"TargetConnectionsInfo": [
+			{
+				"TargetEntities": [
+					{
+						"name": "dbo.Student_Target_001",
+						"properties": {
+							"schema": [
+								{
+									"name": "StudentID",
+									"dataType": "integer"
+								},
+								{
+									"name": "StudentName",
+									"dataType": "string"
+								},
+								{
+									"name": "City",
+									"dataType": "string"
+								},
+								{
+									"name": "Country",
+									"dataType": "string"
+								},
+								{
+									"name": "Age",
+									"dataType": "integer"
+								},
+								{
+									"name": "Email",
+									"dataType": "string"
+								}
+							],
+							"dslConnectorProperties": [
+								{
+									"name": "schemaName",
+									"value": "dbo"
+								},
+								{
+									"name": "tableName",
+									"value": "Student_Target_001"
+								},
+								{
+									"name": "allowSchemaDrift",
+									"value": false
+								},
+								{
+									"name": "inferDriftedColumnTypes",
+									"value": false
+								},
+								{
+									"name": "keys",
+									"value": [
+										"StudentID"
+									]
+								},
+								{
+									"name": "deletable",
+									"value": true
+								},
+								{
+									"name": "updateable",
+									"value": true
+								},
+								{
+									"name": "upsertable",
+									"value": true
+								},
+								{
+									"name": "defaultToUpsert",
+									"value": true
+								}
+							]
+						}
+					}
+				],
+				"Connection": {
+					"linkedService": {
+						"referenceName": "ils_cdc_sql",
+						"type": "LinkedServiceReference"
+					},
+					"linkedServiceType": "AzureSqlDatabase",
+					"type": "linkedservicetype",
+					"isInlineDataset": true,
+					"commonDslConnectorProperties": [
+						{
+							"name": "allowSchemaDrift",
+							"value": true
+						},
+						{
+							"name": "inferDriftedColumnTypes",
+							"value": true
+						},
+						{
+							"name": "format",
+							"value": "table"
+						},
+						{
+							"name": "store",
+							"value": "sqlserver"
+						},
+						{
+							"name": "databaseType",
+							"value": "databaseType"
+						},
+						{
+							"name": "database",
+							"value": "database"
+						},
+						{
+							"name": "deletable",
+							"value": false
+						},
+						{
+							"name": "insertable",
+							"value": true
+						},
+						{
+							"name": "updateable",
+							"value": false
+						},
+						{
+							"name": "upsertable",
+							"value": false
+						},
+						{
+							"name": "skipDuplicateMapInputs",
+							"value": true
+						},
+						{
+							"name": "skipDuplicateMapOutputs",
+							"value": true
+						}
+					]
+				},
+				"DataMapperMappings": [
+					{
+						"targetEntityName": "dbo.Student_Target_001",
+						"sourceEntityName": "dbo.Student_Source_001",
+						"sourceConnectionReference": {
+							"connectionName": "ils_cdc_sql",
+							"type": "linkedservicetype"
+						},
+						"attributeMappingInfo": {
+							"attributeMappings": [
+								{
+									"name": "Age",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "Age",
+										"entity": "dbo.Student_Source_001",
+										"entityConnectionReference": {
+											"connectionName": "ils_cdc_sql",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "City",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "City",
+										"entity": "dbo.Student_Source_001",
+										"entityConnectionReference": {
+											"connectionName": "ils_cdc_sql",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "Country",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "Country",
+										"entity": "dbo.Student_Source_001",
+										"entityConnectionReference": {
+											"connectionName": "ils_cdc_sql",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "Email",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "Email",
+										"entity": "dbo.Student_Source_001",
+										"entityConnectionReference": {
+											"connectionName": "ils_cdc_sql",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "StudentID",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "StudentID",
+										"entity": "dbo.Student_Source_001",
+										"entityConnectionReference": {
+											"connectionName": "ils_cdc_sql",
+											"type": "linkedservicetype"
+										}
+									}
+								},
+								{
+									"name": "StudentName",
+									"type": "Direct",
+									"functionName": "",
+									"attributeReference": {
+										"name": "StudentName",
+										"entity": "dbo.Student_Source_001",
+										"entityConnectionReference": {
+											"connectionName": "ils_cdc_sql",
+											"type": "linkedservicetype"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"Relationships": []
+			}
+		],
+		"Policy": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1
+			},
+			"mode": "Microbatch"
+		},
+		"status": "Stopped",
+		"allowVNetOverride": false,
+		"id": "582039b7f7b244b0a8e162b47f8a619f"
+	}
+}

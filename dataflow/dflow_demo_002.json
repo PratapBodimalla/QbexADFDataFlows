@@ -1,15 +1,15 @@
 {
-	"name": "dataflow1",
+	"name": "dflow_demo_002",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "ds_dflow_student_csv",
+						"referenceName": "ds_sql_student",
 						"type": "DatasetReference"
 					},
-					"name": "StudentDataStream"
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -18,29 +18,30 @@
 						"referenceName": "ds_dflow_target_folder",
 						"type": "DatasetReference"
 					},
-					"name": "SinkStudentFile"
+					"name": "sink1"
 				}
 			],
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
-				"          studentid as string,",
-				"          student_name as string,",
-				"          contact as string,",
-				"          email as string,",
-				"          country as string,",
-				"          city as string",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> StudentDataStream",
-				"StudentDataStream sink(allowSchemaDrift: true,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> SinkStudentFile"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}

@@ -1,0 +1,24 @@
+{
+	"name": "ds_prd_src_student_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexdemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "student_data.csv",
+				"container": "production"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

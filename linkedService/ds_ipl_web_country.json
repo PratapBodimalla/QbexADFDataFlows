@@ -1,0 +1,16 @@
+{
+	"name": "ds_ipl_web_country",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Web",
+		"typeProperties": {
+			"url": "https://www.countrycode.org/",
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "IRSelfHostedMyLocalSystem",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

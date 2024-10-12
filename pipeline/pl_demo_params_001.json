@@ -1,0 +1,122 @@
+{
+	"name": "pl_demo_params_001",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy IPL Matche data from BLOB to ADLS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_blob_csv_qbexblobstoragedemofiles",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_sourceFileName": {
+								"value": "@pipeline().parameters.p_tr_filename",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_csv_qbexsilveradls",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_TargetFileName": {
+								"value": "@concat('students_data',utcNow(),'.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_filename_001",
+					"value": {
+						"value": "@pipeline().parameters.p_tr_filename",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"p_tr_filename": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"v_url": {
+				"type": "String"
+			},
+			"v_filename": {
+				"type": "String"
+			},
+			"v_sche_time": {
+				"type": "String"
+			},
+			"v_win_start": {
+				"type": "String"
+			},
+			"v_window_end": {
+				"type": "String"
+			},
+			"v_filename_001": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-21T05:42:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

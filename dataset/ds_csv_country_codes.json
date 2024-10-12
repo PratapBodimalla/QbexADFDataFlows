@@ -1,0 +1,52 @@
+{
+	"name": "ds_csv_country_codes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_public",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "how-tos"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "country_codes.csv",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "COUNTRY",
+				"type": "String"
+			},
+			{
+				"name": "COUNTRY CODE",
+				"type": "String"
+			},
+			{
+				"name": "ISO CODES",
+				"type": "String"
+			},
+			{
+				"name": "POPULATION",
+				"type": "String"
+			},
+			{
+				"name": "AREA KM2",
+				"type": "String"
+			},
+			{
+				"name": "GDP_USD",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

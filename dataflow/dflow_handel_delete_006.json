@@ -1,0 +1,120 @@
+{
+	"name": "dflow_handel_delete_006",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "targetlogs",
+						"type": "DatasetReference"
+					},
+					"name": "TargetDBStream"
+				},
+				{
+					"dataset": {
+						"referenceName": "studentlogs",
+						"type": "DatasetReference"
+					},
+					"name": "SourceDBStream"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "targetlogs",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinresults"
+				},
+				{
+					"name": "ProjectRequiredColumns"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "exists1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Update_Timestamp as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TargetDBStream",
+				"source(output(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Update_Timestamp as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceDBStream",
+				"exists1, SourceDBStream join(TargetDBStream@StudentID == SourceDBStream@StudentID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinresults",
+				"joinresults select(mapColumn(",
+				"          StudentID = TargetDBStream@StudentID,",
+				"          StudentName = TargetDBStream@StudentName,",
+				"          City = TargetDBStream@City,",
+				"          Country = TargetDBStream@Country,",
+				"          Age = TargetDBStream@Age,",
+				"          Email = TargetDBStream@Email,",
+				"          Created_Timestamp = TargetDBStream@Created_Timestamp,",
+				"          Update_Timestamp = TargetDBStream@Update_Timestamp,",
+				"          StudentID_ind = SourceDBStream@StudentID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ProjectRequiredColumns",
+				"ProjectRequiredColumns alterRow(deleteIf(isNull(StudentID_ind))) ~> alterRow1",
+				"TargetDBStream, SourceDBStream exists(TargetDBStream@StudentID == SourceDBStream@StudentID,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Update_Timestamp as timestamp",
+				"     ),",
+				"     deletable:true,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     keys:['StudentID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

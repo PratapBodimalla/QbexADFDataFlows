@@ -1,0 +1,43 @@
+{
+	"name": "ds_src_blob_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexdemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "multi_nested_json_with_array.json",
+				"folderPath": "sample_json_files",
+				"container": "raw"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"time": {
+					"type": "string"
+				},
+				"callingimsi": {
+					"type": "string"
+				},
+				"callingnum1": {
+					"type": "string"
+				},
+				"callingnum2": {
+					"type": "string"
+				},
+				"switch1": {
+					"type": "string"
+				},
+				"switch2": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,28 @@
+{
+	"name": "ds_json_conference_details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_qbexsilveradls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_TargetFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().p_TargetFileName",
+					"type": "Expression"
+				},
+				"fileSystem": "mylookupcontainer"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

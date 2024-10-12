@@ -1,0 +1,99 @@
+{
+	"name": "dflow_demo_001",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_ipl_match_data",
+						"type": "DatasetReference"
+					},
+					"name": "IPLMatcheDataStresm"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_ipl_match_data_parquet",
+						"type": "DatasetReference"
+					},
+					"name": "IPlMatchData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DeriveIPLSeason"
+				},
+				{
+					"name": "SelectStream"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          season as string,",
+				"          city as string,",
+				"          date as string,",
+				"          match_type as string,",
+				"          player_of_match as string,",
+				"          venue as string,",
+				"          team1 as string,",
+				"          team2 as string,",
+				"          toss_winner as string,",
+				"          toss_decision as string,",
+				"          winner as string,",
+				"          result as string,",
+				"          result_margin as string,",
+				"          target_runs as string,",
+				"          target_overs as string,",
+				"          super_over as string,",
+				"          method as string,",
+				"          umpire1 as string,",
+				"          umpire2 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     enableCdc: true,",
+				"     mode: 'read',",
+				"     skipInitialLoad: false,",
+				"     partitionBy('key',",
+				"          0,",
+				"          season",
+				"     )) ~> IPLMatcheDataStresm",
+				"IPLMatcheDataStresm derive(season = left(season,4)) ~> DeriveIPLSeason",
+				"DeriveIPLSeason select(mapColumn(",
+				"          match_id = id,",
+				"          ipl_season = season,",
+				"          city,",
+				"          date,",
+				"          player_of_match,",
+				"          venue,",
+				"          team1,",
+				"          team2,",
+				"          toss_winner,",
+				"          toss_decision,",
+				"          winner,",
+				"          result,",
+				"          result_margin,",
+				"          target_runs,",
+				"          target_overs,",
+				"          super_over,",
+				"          method",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectStream",
+				"SelectStream sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     filePattern:'ipl_matches[n]',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> IPlMatchData"
+			]
+		}
+	}
+}

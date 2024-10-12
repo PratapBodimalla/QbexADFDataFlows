@@ -1,0 +1,56 @@
+{
+	"name": "studentlogs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ils_cdc_sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "StudentID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StudentName",
+				"type": "varchar"
+			},
+			{
+				"name": "City",
+				"type": "varchar"
+			},
+			{
+				"name": "Country",
+				"type": "varchar"
+			},
+			{
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Email",
+				"type": "varchar"
+			},
+			{
+				"name": "Created_Timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Update_Timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Student_logs_001"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
