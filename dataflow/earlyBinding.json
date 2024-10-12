@@ -1,0 +1,72 @@
+{
+	"name": "earlyBinding",
+	"properties": {
+		"folder": {
+			"name": "Binding"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "studentMarksEarlyBinding",
+						"type": "DatasetReference"
+					},
+					"name": "studenMarks"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "studentMarksADLS",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as short,",
+				"          {student id} as short,",
+				"          student_name as string,",
+				"          {subject-1-marks} as short,",
+				"          {subject-2-marks} as short,",
+				"          {subject-3-marks} as short,",
+				"          {subject-4-marks} as short,",
+				"          {subject-5-marks} as short,",
+				"          {total-marks} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> studenMarks",
+				"studenMarks select(mapColumn(",
+				"          school,",
+				"          class,",
+				"          {student id},",
+				"          student_name,",
+				"          {subject-1-marks},",
+				"          {subject-2-marks},",
+				"          {subject-3-marks},",
+				"          {subject-4-marks},",
+				"          {subject-5-marks},",
+				"          marks = {total-marks}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

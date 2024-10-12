@@ -1,0 +1,132 @@
+{
+	"name": "dflow_alterrow_001",
+	"properties": {
+		"folder": {
+			"name": "AlterRow"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_sql_source_students",
+						"type": "DatasetReference"
+					},
+					"name": "SQLStudentsSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_sql_target_students",
+						"type": "DatasetReference"
+					},
+					"name": "SQLStudentsTarget"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_sql_target_students",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "RecordsToBeDeleted"
+				},
+				{
+					"name": "RecordsToBeUpdatedInserted"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SQLStudentsSource",
+				"source(output(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SQLStudentsTarget",
+				"SQLStudentsTarget, SQLStudentsSource exists(SQLStudentsTarget@StudentID == SQLStudentsSource@StudentID,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists1",
+				"exists1 select(mapColumn(",
+				"          StudentID,",
+				"          StudentName,",
+				"          City,",
+				"          Country,",
+				"          Age,",
+				"          Email",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RecordsToBeDeleted",
+				"SQLStudentsSource select(mapColumn(",
+				"          StudentID,",
+				"          StudentName,",
+				"          City,",
+				"          Country,",
+				"          Age,",
+				"          Email",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RecordsToBeUpdatedInserted",
+				"derivedColumn1, derivedColumn2 union(byName: true)~> union1",
+				"RecordsToBeUpdatedInserted derive(action = 1) ~> derivedColumn1",
+				"RecordsToBeDeleted derive(action = 0) ~> derivedColumn2",
+				"union1 alterRow(upsertIf(action==1),",
+				"     deleteIf(action==0)) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          StudentID as integer,",
+				"          StudentName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as integer,",
+				"          Email as string",
+				"     ),",
+				"     deletable:true,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['StudentID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

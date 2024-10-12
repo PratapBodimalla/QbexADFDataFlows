@@ -1,0 +1,101 @@
+{
+	"name": "dflow_parse_002",
+	"properties": {
+		"folder": {
+			"name": "Parse"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_parse_example",
+						"type": "DatasetReference"
+					},
+					"name": "ParseCSVExample"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "parseCSV"
+				},
+				{
+					"name": "parseJSON"
+				},
+				{
+					"name": "parseXML"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          csv_field as string,",
+				"          json_field as string,",
+				"          xml_field as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ParseCSVExample",
+				"ParseCSVExample parse(csv_field = csv_field ? (desc1 as string,",
+				"          desc2 as string,",
+				"          desc3 as string),",
+				"     format: 'delimited',",
+				"     columnNamesAsHeader: false,",
+				"     columnDelimiter: '|',",
+				"     nullValue: '') ~> parseCSV",
+				"ParseCSVExample parse(json_field = json_field ? (level as string,",
+				"          registration as long),",
+				"     format: 'json',",
+				"     documentForm: 'documentPerLine') ~> parseJSON",
+				"ParseCSVExample parse(xml_field = xml_field ? (Customers as (Customer as integer,",
+				"          CompanyName as string)),",
+				"     format: 'xml',",
+				"     namespaces: true) ~> parseXML",
+				"parseXML sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"parseJSON sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"parseCSV sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3"
+			]
+		}
+	}
+}

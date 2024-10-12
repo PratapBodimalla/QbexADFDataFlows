@@ -1,0 +1,192 @@
+{
+	"name": "ndap_source_master",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ndap"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "source_master.csv",
+				"container": "ndap"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\"",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "source_code",
+				"type": "String"
+			},
+			{
+				"name": "name_of_the_dataset",
+				"type": "String"
+			},
+			{
+				"name": "dataset_information",
+				"type": "String"
+			},
+			{
+				"name": "ministry",
+				"type": "String"
+			},
+			{
+				"name": "department",
+				"type": "String"
+			},
+			{
+				"name": "source_domain_name",
+				"type": "String"
+			},
+			{
+				"name": "location_level_hierarchy",
+				"type": "String"
+			},
+			{
+				"name": "data_refresh_frequency_in_source",
+				"type": "String"
+			},
+			{
+				"name": "comments_on_delta_refresh",
+				"type": "String"
+			},
+			{
+				"name": "time_granularity",
+				"type": "String"
+			},
+			{
+				"name": "is_financial_year",
+				"type": "String"
+			},
+			{
+				"name": "dataset_uploaded_by_OTSI",
+				"type": "String"
+			},
+			{
+				"name": "dataset_owner_source",
+				"type": "String"
+			},
+			{
+				"name": "comprehensive_document_link",
+				"type": "String"
+			},
+			{
+				"name": "source_type",
+				"type": "String"
+			},
+			{
+				"name": "UID",
+				"type": "String"
+			},
+			{
+				"name": "TypeOfData",
+				"type": "String"
+			},
+			{
+				"name": "DatasetComplexity",
+				"type": "String"
+			},
+			{
+				"name": "DatasetCollection",
+				"type": "String"
+			},
+			{
+				"name": "sampling_methodology",
+				"type": "String"
+			},
+			{
+				"name": "sampling_geographic_coverage",
+				"type": "String"
+			},
+			{
+				"name": "sampling_methodology_doc_link",
+				"type": "String"
+			},
+			{
+				"name": "DatasetIngestionMethod",
+				"type": "String"
+			},
+			{
+				"name": "DatasetHostedBy",
+				"type": "String"
+			},
+			{
+				"name": "notused",
+				"type": "String"
+			},
+			{
+				"name": "CollectionID",
+				"type": "String"
+			},
+			{
+				"name": "SectorCode",
+				"type": "String"
+			},
+			{
+				"name": "processingstatus",
+				"type": "String"
+			},
+			{
+				"name": "_comments",
+				"type": "String"
+			},
+			{
+				"name": "processingtype",
+				"type": "String"
+			},
+			{
+				"name": "information_of_the_dataset",
+				"type": "String"
+			},
+			{
+				"name": "sprint_no",
+				"type": "String"
+			},
+			{
+				"name": "task_id",
+				"type": "String"
+			},
+			{
+				"name": "fiscvariant",
+				"type": "String"
+			},
+			{
+				"name": "domain",
+				"type": "String"
+			},
+			{
+				"name": "du_source_id",
+				"type": "String"
+			},
+			{
+				"name": "Snapshot",
+				"type": "String"
+			},
+			{
+				"name": "activity",
+				"type": "String"
+			},
+			{
+				"name": "onboarding_status",
+				"type": "String"
+			},
+			{
+				"name": "status_comment",
+				"type": "String"
+			},
+			{
+				"name": "SnapshotColumn",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

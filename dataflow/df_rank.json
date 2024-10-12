@@ -1,0 +1,69 @@
+{
+	"name": "df_rank",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "aug_df_rank",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "rank1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          subject_1_written_marks as string,",
+				"          subject_2_written_marks as string,",
+				"          subject_3_written_marks as string,",
+				"          subject_4_written_marks as string,",
+				"          subject_5_written_marks as string,",
+				"          subject_1_practical_marks as string,",
+				"          subject_2_practical_marks as string,",
+				"          subject_3_practical_marks as string,",
+				"          subject_4_practical_marks as string,",
+				"          subject_5_practical_marks as string,",
+				"          subject_1_marks as string,",
+				"          subject_2_marks as string,",
+				"          subject_3_marks as string,",
+				"          subject_4_marks as string,",
+				"          subject_5_marks as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 rank(desc(subject_3_marks, true),",
+				"     output(Rank_students as long)) ~> rank1",
+				"rank1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,104 @@
+{
+	"name": "df_flatten",
+	"properties": {
+		"folder": {
+			"name": "1.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_flatten",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_flatten_001",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "flatten2"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          studentid as integer,",
+				"          studentname as string,",
+				"          age as integer,",
+				"          email as string,",
+				"          address as (city as string, pincode as string, country as (countrycode as string, countryname as string, country_iso_code as string)),",
+				"          technologies_known as string[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source1",
+				"source(output(",
+				"          ordernumber as string,",
+				"          orderdate as string,",
+				"          orderlines as (prod as string, price as integer)[],",
+				"          city as (sanmateo as string)[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source2",
+				"source1 foldDown(unroll(technologies_known),",
+				"     mapColumn(",
+				"          studentid,",
+				"          studentname,",
+				"          age,",
+				"          email,",
+				"          technologies_known",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"source2 foldDown(unrollMultiple(orderlines,city),",
+				"     mapColumn(",
+				"          ordernumber,",
+				"          orderdate,",
+				"          orderlines,",
+				"          city",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2",
+				"flatten2 select(mapColumn(",
+				"          ordernumber,",
+				"          orderdate,",
+				"          each(orderlines,match(true()))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

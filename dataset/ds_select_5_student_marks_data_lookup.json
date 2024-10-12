@@ -1,0 +1,38 @@
+{
+	"name": "ds_select_5_student_marks_data_lookup",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "5_student_marks_for_rule_based_mapping_lookup_file.csv",
+				"folderPath": "DataFlowTransformations/1.SelectTransformation/5_student_marks_rule_based_mapping_lookup",
+				"fileSystem": "datasets"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "index",
+				"type": "String"
+			},
+			{
+				"name": "source_column_name",
+				"type": "String"
+			},
+			{
+				"name": "target_column_name",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

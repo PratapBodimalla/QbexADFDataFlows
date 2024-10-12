@@ -1,0 +1,68 @@
+{
+	"name": "ds_array_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "multi_nested_json_with_array.json",
+				"folderPath": "sample_json_files",
+				"container": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"studentid": {
+					"type": "integer"
+				},
+				"studentname": {
+					"type": "string"
+				},
+				"age": {
+					"type": "integer"
+				},
+				"email": {
+					"type": "string"
+				},
+				"address": {
+					"type": "object",
+					"properties": {
+						"city": {
+							"type": "string"
+						},
+						"pincode": {
+							"type": "string"
+						},
+						"country": {
+							"type": "object",
+							"properties": {
+								"countrycode": {
+									"type": "string"
+								},
+								"countryname": {
+									"type": "string"
+								},
+								"country_iso_code": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"technologies_known": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

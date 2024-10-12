@@ -1,0 +1,760 @@
+{
+	"name": "ndap_state_level_data_processing",
+	"properties": {
+		"folder": {
+			"name": "ndap"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ndap_8843",
+						"type": "DatasetReference"
+					},
+					"name": "rawTable8443"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_source_master",
+						"type": "DatasetReference"
+					},
+					"name": "sourceMaster"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_indicator_dimension",
+						"type": "DatasetReference"
+					},
+					"name": "indicatorDimension"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_state_name_code_lookup",
+						"type": "DatasetReference"
+					},
+					"name": "stateNameCodeLookup"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_state_weights",
+						"type": "DatasetReference"
+					},
+					"name": "stateWeights"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_lgd_state_master",
+						"type": "DatasetReference"
+					},
+					"name": "stateLGDMaster"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_state_pc11_master",
+						"type": "DatasetReference"
+					},
+					"name": "statePC11Master"
+				}
+			],
+			"sinks": [
+				{
+					"name": "cacheIndicatorDimension"
+				},
+				{
+					"name": "cacheSourceMaster"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_tgt_8443",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ndap_tgt_8443",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "filter2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "derivedColumn4",
+					"description": "Convert alias names string to array and filter out blank array elements"
+				},
+				{
+					"name": "derivedColumn5",
+					"description": "Unnest the state alias names array"
+				},
+				{
+					"name": "select1",
+					"description": "Remove unwanted columns"
+				},
+				{
+					"name": "aggregate2",
+					"description": "Remove Duplicates"
+				},
+				{
+					"name": "filter3",
+					"description": "filter for only LGD Entries"
+				},
+				{
+					"name": "join1",
+					"description": "join with state alias lookup to get LGD StateCode and LGD State Name"
+				},
+				{
+					"name": "filter4"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn6"
+				},
+				{
+					"name": "aggregate3"
+				},
+				{
+					"name": "aggregate4"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "aggregate5"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "filter5"
+				},
+				{
+					"name": "aggregate6"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "join4"
+				},
+				{
+					"name": "select6"
+				},
+				{
+					"name": "derivedColumn7"
+				},
+				{
+					"name": "select7"
+				},
+				{
+					"name": "select8",
+					"description": "determine_pc11_lgd"
+				},
+				{
+					"name": "join5"
+				},
+				{
+					"name": "filter6"
+				},
+				{
+					"name": "select9"
+				},
+				{
+					"name": "join6"
+				},
+				{
+					"name": "select10"
+				},
+				{
+					"name": "aggregate7"
+				},
+				{
+					"name": "aggregate8"
+				},
+				{
+					"name": "join7"
+				},
+				{
+					"name": "join8"
+				},
+				{
+					"name": "derivedColumn8",
+					"description": "Calculate Operation"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "select12"
+				},
+				{
+					"name": "derivedColumn10"
+				},
+				{
+					"name": "derivedColumn11"
+				},
+				{
+					"name": "window2"
+				},
+				{
+					"name": "derivedColumn12"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          RecordNo as string,",
+				"          RequestID as string,",
+				"          BatchNo as string,",
+				"          {1} as string,",
+				"          {2} as string,",
+				"          {3} as string,",
+				"          {4} as string,",
+				"          {5} as string,",
+				"          {6} as string,",
+				"          {7} as string,",
+				"          {8} as string,",
+				"          {9} as string,",
+				"          {10} as string,",
+				"          {11} as string,",
+				"          {12} as string,",
+				"          {13} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     rowUrlColumn: 'filename') ~> rawTable8443",
+				"source(output(",
+				"          source_code as string,",
+				"          name_of_the_dataset as string,",
+				"          dataset_information as string,",
+				"          ministry as string,",
+				"          department as string,",
+				"          source_domain_name as string,",
+				"          location_level_hierarchy as string,",
+				"          data_refresh_frequency_in_source as string,",
+				"          comments_on_delta_refresh as string,",
+				"          time_granularity as string,",
+				"          is_financial_year as string,",
+				"          dataset_uploaded_by_OTSI as string,",
+				"          dataset_owner_source as string,",
+				"          comprehensive_document_link as string,",
+				"          source_type as string,",
+				"          UID as string,",
+				"          TypeOfData as string,",
+				"          DatasetComplexity as string,",
+				"          DatasetCollection as string,",
+				"          sampling_methodology as string,",
+				"          sampling_geographic_coverage as string,",
+				"          sampling_methodology_doc_link as string,",
+				"          DatasetIngestionMethod as string,",
+				"          DatasetHostedBy as string,",
+				"          notused as string,",
+				"          CollectionID as string,",
+				"          SectorCode as string,",
+				"          processingstatus as string,",
+				"          {_comments} as string,",
+				"          processingtype as string,",
+				"          information_of_the_dataset as string,",
+				"          sprint_no as string,",
+				"          task_id as string,",
+				"          fiscvariant as string,",
+				"          domain as string,",
+				"          du_source_id as string,",
+				"          Snapshot as string,",
+				"          activity as string,",
+				"          onboarding_status as string,",
+				"          status_comment as string,",
+				"          SnapshotColumn as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceMaster",
+				"source(output(",
+				"          source_code as string,",
+				"          source_table as string,",
+				"          src_column_name as string,",
+				"          column_name as string,",
+				"          longdescription as string,",
+				"          shortdescription as string,",
+				"          synonymns as string,",
+				"          hidden_flag as string,",
+				"          report_col_id as string,",
+				"          dimension_flag as string,",
+				"          dimension_type as string,",
+				"          reference_column as string,",
+				"          data_type as string,",
+				"          units as string,",
+				"          scaling_factor as string,",
+				"          aggregation_type_loc as string,",
+				"          aggregation_type_time as string,",
+				"          weighing_variable_name as string,",
+				"          weighing_variable_id as string,",
+				"          weighting_variable_availability as string,",
+				"          calculate_as_formula as string,",
+				"          UniqueKey as string,",
+				"          VariableType as string,",
+				"          NotSearchRelevant as string,",
+				"          label as string,",
+				"          UOM as string,",
+				"          Currency as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> indicatorDimension",
+				"source(output(",
+				"          Source as string,",
+				"          StateName as string,",
+				"          StateCode as string,",
+				"          Census2011Code as string,",
+				"          Census2001Code as string,",
+				"          State_UT as string,",
+				"          Synonyms as string,",
+				"          donotuse as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> stateNameCodeLookup",
+				"source(output(",
+				"          SpecialCase as string,",
+				"          Category as string,",
+				"          Scenario as string,",
+				"          Country as string,",
+				"          StateKeyCode as string,",
+				"          StateCode as string,",
+				"          StateName as string,",
+				"          TotalPopulation as string,",
+				"          TotalPopulationUrban as string,",
+				"          TotalPopulationRural as string,",
+				"          TotalPopulationMale as string,",
+				"          TotalPopulationMaleUrban as string,",
+				"          TotalPopulationMaleRural as string,",
+				"          TotalPopulationFemale as string,",
+				"          TotalPopulationFemaleUrban as string,",
+				"          TotalPopulationFemaleRural as string,",
+				"          NumberOfHouseholds as string,",
+				"          NumberOfHouseholdsUrban as string,",
+				"          NumberOfHouseholdsRural as string,",
+				"          LandArea as string,",
+				"          LandAreaUrban as string,",
+				"          LandAreaRural as string,",
+				"          {TotalPopulationMappingError%} as string,",
+				"          {TotalPopulationUrbanMappingError%} as string,",
+				"          {TotalPopulationRuralMappingError%} as string,",
+				"          {TotalPopulationMaleMappingError%} as string,",
+				"          {TotalPopulationMaleUrbanMappingError%} as string,",
+				"          {TotalPopulationMaleRuralMappingError%} as string,",
+				"          {TotalPopulationFeMaleMappingError%} as string,",
+				"          {TotalPopulationFeMaleUrbanMappingError%} as string,",
+				"          {TotalPopulationFeMaleRuralMappingError%} as string,",
+				"          {NumberOfHouseholdsMappingError%} as string,",
+				"          {NumberOfHouseholdsUrbanMappingError%} as string,",
+				"          {NumberOfHouseholdsRuralMappingError%} as string,",
+				"          {LandAreaMappingError%} as string,",
+				"          {LandAreaUrbanMappingError%} as string,",
+				"          {LandAreaRuralMappingError%} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> stateWeights",
+				"source(output(",
+				"          state_code as string,",
+				"          state_name as string,",
+				"          from_date as string,",
+				"          to_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> stateLGDMaster",
+				"source(output(",
+				"          Source as string,",
+				"          StateName as string,",
+				"          StateCode as string,",
+				"          Census2011Code as string,",
+				"          Census2001Code as string,",
+				"          State_UT as string,",
+				"          Synonyms as string,",
+				"          donotuse as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> statePC11Master",
+				"rawTable8443 filter(isNull({3}) == toBoolean('false')  && isNull({13}) == toBoolean('false') \r",
+				" /* &&  {2} == '2005-06' && isNull({4}) == toBoolean('false')*/) ~> filter1",
+				"filter1 derive(source_code = right(left(filename,8),4)) ~> derivedColumn1",
+				"indicatorDimension aggregate(groupBy(source_code),",
+				"     target_column_index = collect(src_column_name),",
+				"          column_names = collect(column_name)) ~> aggregate1",
+				"aggregate1 derive(map_column_index_name = keyValues(target_column_index,column_names)) ~> derivedColumn2",
+				"sort1 pivot(groupBy(source_code),",
+				"     pivotBy(src_column_name),",
+				"     {} = max(src_column_name),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivot1",
+				"indicatorDimension sort(asc(toInteger(src_column_name), true)) ~> sort1",
+				"derivedColumn1, pivot1 union(byName: true)~> union1",
+				"union1 filter(!isNull(RecordNo)) ~> filter2",
+				"filter2 derive({14} = left({2},4) /* year */,",
+				"          fiscvariant = cacheSourceMaster#lookup(source_code).fiscvariant,",
+				"          {15} = /* iif(cacheSourceMaster#lookup(source_code).fiscvariant == 'C0', 'Calendar Year (Jan - Dec),'+left({2},4),'') */\r",
+				"case(cacheSourceMaster#lookup(source_code).fiscvariant == 'C0', 'Calendar Year (Jan - Dec), '+left({2},4),\r",
+				"    cacheSourceMaster#lookup(source_code).fiscvariant == 'C1', 'Agriculture Year (Jul - Jun), '+left({2},4),\r",
+				"    cacheSourceMaster#lookup(source_code).fiscvariant == 'F1', 'Financial Year (Apr - Mar), '+left({2},4),\r",
+				"    cacheSourceMaster#lookup(source_code).fiscvariant == 'F2', 'Year (Jul - Jun), '+left({2},4))) ~> derivedColumn3",
+				"stateNameCodeLookup derive(alias_names_array = filter(split(Synonyms,','), #item != '')) ~> derivedColumn4",
+				"derivedColumn4 derive(unfold = /*unest in SQL */\r",
+				"toString(unfold(alias_names_array))) ~> derivedColumn5",
+				"derivedColumn5 select(mapColumn(",
+				"          Source,",
+				"          LGDStateName = StateName,",
+				"          LGDStateCode = StateCode,",
+				"          state_alias_names = unfold,",
+				"          PC11StateCode = Census2011Code",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"filter3 aggregate(groupBy(state_alias_names = trim(lower(state_alias_names))),",
+				"     each(match(name!='state_alias_names'), $$ = first($$))) ~> aggregate2",
+				"select1 filter(Source == 'PC11') ~> filter3",
+				"derivedColumn3, select5 join(trim(lower({1})) == trim(state_alias_names),",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"stateLGDMaster filter(toInteger(state_code) > 0) ~> filter4",
+				"filter4 select(mapColumn(",
+				"          state_code,",
+				"          state_name",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive(source = 'LGD') ~> derivedColumn6",
+				"derivedColumn6 aggregate(groupBy(source),",
+				"     array_state_lgd_codes_md = /* string_agg in sql */\r",
+				"collect(toInteger(state_code)),",
+				"          number_of_lgd_states_md = countDistinct(state_code)) ~> aggregate3",
+				"join4 aggregate(groupBy({14}),",
+				"     array_lgd_state_codes_from_source = /* string_agg */ \r",
+				"collect(toInteger(LGDStateCode)),",
+				"          number_of_lgd_states_from_source = countDistinct(LGDStateCode),",
+				"          array_PC11_state_codes_from_source = /* string_agg */ collect(toInteger(PC11StateCode)),",
+				"          number_of_PC11_states_from_source = countDistinct(PC11StateCode)) ~> aggregate4",
+				"aggregate4, aggregate3 join(1 == 1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"statePC11Master select(mapColumn(",
+				"          Source,",
+				"          PC11StateName = StateName,",
+				"          PC11StateCode = Census2011Code",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 aggregate(groupBy(Source),",
+				"     array_state_pc11_codes_md = collect(toInteger(PC11StateCode)),",
+				"          number_of_pc11_states_md = countDistinct(PC11StateCode)) ~> aggregate5",
+				"join2, aggregate5 join(1 == 1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"select1 filter(Source == 'LGD') ~> filter5",
+				"filter5 aggregate(groupBy(state_alias_names = trim(lower(state_alias_names))),",
+				"     each(match(name!='state_alias_names'), $$ = first($$))) ~> aggregate6",
+				"aggregate2 select(mapColumn(",
+				"          state_alias_names,",
+				"          Source,",
+				"          PC11StateCode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"aggregate6 select(mapColumn(",
+				"          state_alias_names,",
+				"          Source,",
+				"          LGDStateName,",
+				"          LGDStateCode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select6, select4 join(trim(lower({1})) == trim(state_alias_names),",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join4",
+				"join1 select(mapColumn(",
+				"          RecordNo,",
+				"          RequestID,",
+				"          BatchNo,",
+				"          {1},",
+				"          {2},",
+				"          {3},",
+				"          {4},",
+				"          {5},",
+				"          {6},",
+				"          {7},",
+				"          {8},",
+				"          {9},",
+				"          {10},",
+				"          {11},",
+				"          {12},",
+				"          {13},",
+				"          filename,",
+				"          source_code,",
+				"          {14},",
+				"          fiscvariant,",
+				"          {15},",
+				"          Source,",
+				"          LGDStateName,",
+				"          LGDStateCode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select6",
+				"join3 derive(determine_pc11_lgd = case(number_of_lgd_states_from_source == number_of_lgd_states_md && sort(distinct(array_state_lgd_codes_md), compare(#item1, #item2))  == sort(distinct(array_lgd_state_codes_from_source),compare(#item1, #item2)), 'LGD',\r",
+				"     number_of_PC11_states_from_source == number_of_pc11_states_md && sort(distinct(array_state_pc11_codes_md),compare(#item1, #item2)) == sort(distinct(array_PC11_state_codes_from_source),compare(#item1, #item2)),'PC11')) ~> derivedColumn7",
+				"join4 select(mapColumn(",
+				"          source_code,",
+				"          RecordNo,",
+				"          RequestID,",
+				"          BatchNo,",
+				"          {1},",
+				"          {2},",
+				"          {3},",
+				"          {4},",
+				"          {5},",
+				"          {6},",
+				"          {7},",
+				"          {8},",
+				"          {9},",
+				"          {10},",
+				"          {11},",
+				"          {12},",
+				"          {13},",
+				"          {14},",
+				"          {15},",
+				"          filename,",
+				"          fiscvariant,",
+				"          LGDStateName,",
+				"          LGDStateCode,",
+				"          PC11StateCode,",
+				"          state_alias_names",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select7",
+				"derivedColumn7 select(mapColumn(",
+				"          {14},",
+				"          determine_pc11_lgd",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select8",
+				"select7, select8 join(select7@{14} == select8@{14},",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join5",
+				"stateWeights filter(toInteger(Category) == 0) ~> filter6",
+				"filter6 select(mapColumn(",
+				"          SpecialCase,",
+				"          Category,",
+				"          Scenario,",
+				"          Country,",
+				"          StateKeyCode,",
+				"          StateCode,",
+				"          StateName,",
+				"          TotalPopulation,",
+				"          TotalPopulationUrban,",
+				"          TotalPopulationRural,",
+				"          TotalPopulationMale,",
+				"          TotalPopulationMaleUrban,",
+				"          TotalPopulationMaleRural,",
+				"          TotalPopulationFemale,",
+				"          TotalPopulationFemaleUrban,",
+				"          TotalPopulationFemaleRural,",
+				"          NumberOfHouseholds,",
+				"          NumberOfHouseholdsUrban,",
+				"          NumberOfHouseholdsRural,",
+				"          LandArea,",
+				"          LandAreaUrban,",
+				"          LandAreaRural",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select9",
+				"select10, select9 join(determine_pc11_lgd == Scenario",
+				"     && toInteger(iif(determine_pc11_lgd == 'PC11', PC11StateCode, LGDStateCode)) == toInteger(iif(Scenario=='PC11', StateKeyCode,StateCode)),",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join6",
+				"join5 select(mapColumn(",
+				"          source_code,",
+				"          {1},",
+				"          {2},",
+				"          {3},",
+				"          {4},",
+				"          {5},",
+				"          {6},",
+				"          {7},",
+				"          {8},",
+				"          {9},",
+				"          {10},",
+				"          {11},",
+				"          {12},",
+				"          {13},",
+				"          {14} = select8@{14},",
+				"          {15},",
+				"          LGDStateName,",
+				"          LGDStateCode,",
+				"          PC11StateCode,",
+				"          determine_pc11_lgd",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select10",
+				"join6 aggregate(groupBy(source_code,",
+				"          {1},",
+				"          {2}),",
+				"     number_of_lgd_codes_per_source_record = count(StateCode)) ~> aggregate7",
+				"join6 aggregate(groupBy(StateCode),",
+				"     number_of_source_records_per_lgd_code = countDistinct({1}, {2})) ~> aggregate8",
+				"join6, aggregate7 join(select10@source_code == aggregate7@source_code",
+				"     && select10@{1} == aggregate7@{1}",
+				"     && select10@{2} == aggregate7@{2},",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join7",
+				"join7, aggregate8 join(select9@StateCode == aggregate8@StateCode,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join8",
+				"join8 derive(Operation = case(number_of_lgd_codes_per_source_record == 1 && number_of_source_records_per_lgd_code == 1, 'Direct Mapping',\r",
+				"     number_of_lgd_codes_per_source_record > 1 && number_of_source_records_per_lgd_code == 1, 'Split',\r",
+				"     number_of_lgd_codes_per_source_record == 1 && number_of_source_records_per_lgd_code > 1, 'Merge')) ~> derivedColumn8",
+				"select12 window(over(StateCode_new = iif(Operation=='Merge',StateCode,{1}),",
+				"          {2}),",
+				"     asc(iif(Operation == 'Merge',StateCode,{1}), true),",
+				"     TotalPopulation_aggregated = sum(toInteger(TotalPopulation))) ~> window1",
+				"derivedColumn8 select(mapColumn(",
+				"          source_code = select10@source_code,",
+				"          {1} = select10@{1},",
+				"          {2} = select10@{2},",
+				"          {3},",
+				"          {4},",
+				"          {5},",
+				"          {6},",
+				"          {7},",
+				"          {8},",
+				"          {9},",
+				"          {10},",
+				"          {11},",
+				"          {12},",
+				"          {13},",
+				"          {14},",
+				"          {15},",
+				"          LGDStateName,",
+				"          LGDStateCode,",
+				"          PC11StateCode,",
+				"          determine_pc11_lgd,",
+				"          StateKeyCode,",
+				"          StateCode = select9@StateCode,",
+				"          StateName,",
+				"          TotalPopulation,",
+				"          Operation",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select12",
+				"window1 derive(population_count_weights = iif(Operation == 'Split',toInteger(TotalPopulation)/toInteger(TotalPopulation_aggregated),1),",
+				"          population_percentage_weights = iif(Operation == 'Merge',toInteger(TotalPopulation)/toInteger(TotalPopulation_aggregated),1)) ~> derivedColumn10",
+				"derivedColumn10 derive({3} = round(toInteger({3})*population_count_weights,0),",
+				"          {4} = round(toInteger({4})*population_count_weights,0),",
+				"          {5} = toInteger({5})*population_count_weights,",
+				"          {6} = toInteger({6})*population_count_weights) ~> derivedColumn11",
+				"derivedColumn11 window(over(source_code,",
+				"          {2},",
+				"          StateCode),",
+				"     asc(StateCode, true),",
+				"     asc({2}, true),",
+				"     {7_1} = sum(toDouble({7}) * population_percentage_weights),",
+				"          {8_1} = sum(toDouble({8}) * population_percentage_weights),",
+				"          {9_1} = sum(toDouble({9}) * population_percentage_weights),",
+				"          {10_1} = sum(toDouble({10}) * population_percentage_weights),",
+				"          {11_1} = sum(toDouble({11}) * population_percentage_weights),",
+				"          {12_1} = sum(toDouble({12}) * population_percentage_weights),",
+				"          {13_1} = sum(toDouble({13}) * population_percentage_weights)) ~> window2",
+				"window2 derive(each(match(in(array('7_1','8_1','9_1'),name)/*,'10_1','11_1','12_1','13_1'*/), split($0,'_')[1] = /*'7'+'_1'*/\r",
+				"iif( Operation == 'Merge',toString( toDouble(byName(toString(split(toString($0),'_')[1]))) / toDouble(byName(toString($0))) ) , toString(byName(toString($0)) ) )\r",
+				"\r",
+				"/* toString( toDouble(byName(split($0,'_')[1])) / toDouble($$) ) */)) ~> derivedColumn12",
+				"derivedColumn2 sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     keys:['source_code'],",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> cacheIndicatorDimension",
+				"sourceMaster sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     keys:['source_code'],",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> cacheSourceMaster",
+				"select7 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['ndap_8443_lgd.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1",
+				"derivedColumn12 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['ndap_report_8443.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink2"
+			]
+		}
+	}
+}

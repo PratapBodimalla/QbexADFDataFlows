@@ -1,0 +1,48 @@
+{
+	"name": "ds_nested_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "nested_json.json",
+				"folderPath": "sample_json_files",
+				"container": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"studentid": {
+					"type": "integer"
+				},
+				"studentname": {
+					"type": "string"
+				},
+				"age": {
+					"type": "integer"
+				},
+				"email": {
+					"type": "string"
+				},
+				"address": {
+					"type": "object",
+					"properties": {
+						"city": {
+							"type": "string"
+						},
+						"country": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

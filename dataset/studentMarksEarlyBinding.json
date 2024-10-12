@@ -1,0 +1,66 @@
+{
+	"name": "studentMarksEarlyBinding",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sample_school_data.csv",
+				"folderPath": "student_marks",
+				"container": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "school",
+				"type": "String"
+			},
+			{
+				"name": "class",
+				"type": "String"
+			},
+			{
+				"name": "student id",
+				"type": "String"
+			},
+			{
+				"name": "student_name",
+				"type": "String"
+			},
+			{
+				"name": "subject-1-marks",
+				"type": "String"
+			},
+			{
+				"name": "subject-2-marks",
+				"type": "String"
+			},
+			{
+				"name": "subject-3-marks",
+				"type": "String"
+			},
+			{
+				"name": "subject-4-marks",
+				"type": "String"
+			},
+			{
+				"name": "subject-5-marks",
+				"type": "String"
+			},
+			{
+				"name": "total-marks",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,66 @@
+{
+	"name": "aug_df_pivot",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "aug_ds_pivot",
+						"type": "DatasetReference"
+					},
+					"name": "sourceBMWSales"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "pivotActualEstimates"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Creates an explicit mapping for each drifted column"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Company as string,",
+				"          BusinessUnit as string,",
+				"          Year as string,",
+				"          Estimate_Actual as string,",
+				"          Sales as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceBMWSales",
+				"sourceBMWSales pivot(groupBy(Company,",
+				"          BusinessUnit,",
+				"          Year),",
+				"     pivotBy(Estimate_Actual),",
+				"     BMW = sum(toInteger(Sales)),",
+				"     columnNaming: '_$V ($N ) ',",
+				"     lateral: true) ~> pivotActualEstimates",
+				"pivotActualEstimates derive({_ActualSales in Million EUROS (BMW ) } = toLong(byName('_ActualSales in Million EUROS (BMW ) ')),",
+				"          {_EstimatesSales in Million EUR (BMW ) } = toLong(byName('_EstimatesSales in Million EUR (BMW ) '))) ~> MapDrifted1",
+				"MapDrifted1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

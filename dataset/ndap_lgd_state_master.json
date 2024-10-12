@@ -1,0 +1,44 @@
+{
+	"name": "ndap_lgd_state_master",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ndap"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "state_lgd_master.csv",
+				"container": "ndap"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "state_code",
+				"type": "String"
+			},
+			{
+				"name": "state_name",
+				"type": "String"
+			},
+			{
+				"name": "from_date",
+				"type": "String"
+			},
+			{
+				"name": "to_date",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

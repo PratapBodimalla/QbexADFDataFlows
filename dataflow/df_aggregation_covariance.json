@@ -1,0 +1,61 @@
+{
+	"name": "df_aggregation_covariance",
+	"properties": {
+		"folder": {
+			"name": "DataFlowFunctions"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_collect",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          student as integer,",
+				"          Hours_Studied as short,",
+				"          Exam_Score as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 aggregate(groupBy(Year = student),",
+				"     covariance = covariancePopulation(Hours_Studied, Exam_Score)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

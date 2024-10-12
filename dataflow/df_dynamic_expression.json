@@ -1,0 +1,87 @@
+{
+	"name": "df_dynamic_expression",
+	"properties": {
+		"folder": {
+			"name": "DataFlowFunctions"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_blob_qbexblobstoragedemofiles",
+						"type": "LinkedServiceReference"
+					},
+					"name": "data"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     p_column_names_array as string[] (['apples','pears']),",
+				"     p_logic_array as string[] (['apples','pears','1','2','(toInteger(schools) + toInteger(districts)) > 60000']),",
+				"     p_logic_array_dummy as string[] (['apples','pears','1','2','(toInteger(schools) + toInteger(districts)) > 60000'])",
+				"}",
+				"source(output(",
+				"          state as string,",
+				"          year as string,",
+				"          districts as integer,",
+				"          schools as integer",
+				"     ),",
+				"     useSchema: false,",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delimited',",
+				"     container: 'dataflow-functions',",
+				"     fileName: 'array_demo_2_data_file.csv',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: true) ~> data",
+				"data select(mapColumn(",
+				"          state,",
+				"          year,",
+				"          districts,",
+				"          schools",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive(column1 = toDouble(expr($p_logic_array[5])),",
+				"          column2 = $p_logic_array_dummy,",
+				"          column3 = $p_logic_array) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}

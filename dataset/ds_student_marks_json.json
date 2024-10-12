@@ -1,0 +1,67 @@
+{
+	"name": "ds_student_marks_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "student_marks.json",
+				"folderPath": "student_marks",
+				"container": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"school": {
+					"type": "string"
+				},
+				"class": {
+					"type": "integer"
+				},
+				"student id": {
+					"type": "integer"
+				},
+				"student_name": {
+					"type": "string"
+				},
+				"Marks": {
+					"type": "object",
+					"properties": {
+						"Languages": {
+							"type": "object",
+							"properties": {
+								"english_marks": {
+									"type": "integer"
+								},
+								"telugu_marks": {
+									"type": "integer"
+								}
+							}
+						},
+						"main_subjects": {
+							"type": "object",
+							"properties": {
+								"math_marks": {
+									"type": "integer"
+								},
+								"science_marks": {
+									"type": "integer"
+								},
+								"social_marks": {
+									"type": "integer"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

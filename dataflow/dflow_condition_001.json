@@ -1,0 +1,104 @@
+{
+	"name": "dflow_condition_001",
+	"properties": {
+		"folder": {
+			"name": "ConditionalSplit"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_student_marks",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          {subject-1-marks} as string,",
+				"          {subject-2-marks} as string,",
+				"          {subject-3-marks} as string,",
+				"          {subject-4-marks} as string,",
+				"          {subject-5-marks} as string,",
+				"          {total-marks} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 split(between(toInteger(class),1,5),",
+				"     between(toInteger(class),6,7),",
+				"     disjoint: false) ~> split1@(classes1to5, classes6t07, others)",
+				"split1@classes1to5 derive(marks = @(english={subject-1-marks},",
+				"          telugu={subject-2-marks})) ~> derivedColumn1",
+				"split1@classes6t07 derive(marks = @(english={subject-1-marks},",
+				"          hindi={subject-2-marks})) ~> derivedColumn2",
+				"split1@others derive(marks = @(english={subject-1-marks},",
+				"          french={subject-2-marks})) ~> derivedColumn3",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3"
+			]
+		}
+	}
+}

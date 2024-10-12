@@ -1,0 +1,150 @@
+{
+	"name": "dflow_flatten_001",
+	"properties": {
+		"folder": {
+			"name": "Flatten"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_array_json",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_array_json_object_and_array",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_array_of_objects",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "flatten2"
+				},
+				{
+					"name": "flatten3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          studentid as integer,",
+				"          studentname as string,",
+				"          age as integer,",
+				"          email as string,",
+				"          address as (city as string, pincode as string, country as (countrycode as string, countryname as string, country_iso_code as string)),",
+				"          technologies_known as string[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source1",
+				"source(output(",
+				"          id as string,",
+				"          context as (device as (type as string), custom as (dimensions as (TargetResourceType as string)[]))",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source2",
+				"source(output(",
+				"          ordernumber as string,",
+				"          orderdate as string,",
+				"          orderlines as (prod as string, price as integer)[],",
+				"          city as (sanmateo as string)[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source3",
+				"source1 foldDown(unroll(technologies_known),",
+				"     mapColumn(",
+				"          studentid,",
+				"          studentname,",
+				"          age,",
+				"          email,",
+				"          technologies_known,",
+				"          each(address,patternMatch(`.*`)),",
+				"          each(address.country,patternMatch(`.*`))",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"source2 foldDown(unroll(context.custom.dimensions),",
+				"     mapColumn(",
+				"          id,",
+				"          each(context.device,patternMatch(`.*`)),",
+				"          each(context.custom,patternMatch(`.*`))",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2",
+				"source3 foldDown(unrollMultiple(orderlines,city),",
+				"     mapColumn(",
+				"          ordernumber,",
+				"          orderdate,",
+				"          orderlines,",
+				"          city",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten3",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"flatten2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"flatten3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3"
+			]
+		}
+	}
+}

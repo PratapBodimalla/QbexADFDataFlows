@@ -1,0 +1,14 @@
+{
+	"name": "QbexADFDataFlowExamples",
+	"properties": {
+		"globalConfigurations": {
+			"PipelineBillingEnabled": "false"
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "2d9466db-35d0-41df-9a4e-be1ed793f73e",
+		"tenantId": "90a19f08-ad87-41bc-9b3d-d6d7309749b9"
+	}
+}

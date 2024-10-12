@@ -1,0 +1,79 @@
+{
+	"name": "dflow_rank_002",
+	"properties": {
+		"folder": {
+			"name": "Rank"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_student_marks_json",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "rank1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as integer,",
+				"          {student id} as integer,",
+				"          student_name as string,",
+				"          Marks as (Languages as (english_marks as integer, telugu_marks as integer), main_subjects as (math_marks as integer, science_marks as integer, social_marks as integer))",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 rank(asc(Marks.Languages.english_marks+Marks.Languages.telugu_marks+Marks.main_subjects.math_marks+Marks.main_subjects.science_marks+Marks.main_subjects.social_marks, true),",
+				"     output(rank_student as long)) ~> rank1",
+				"rank1 select(mapColumn(",
+				"          school,",
+				"          class,",
+				"          {student id},",
+				"          student_name,",
+				"          rank_student,",
+				"          each(Marks.Languages,patternMatch(`.*`),",
+				"               $0 = $$),",
+				"          each(Marks.main_subjects,patternMatch(`.*`))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

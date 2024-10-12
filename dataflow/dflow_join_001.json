@@ -1,0 +1,123 @@
+{
+	"name": "dflow_join_001",
+	"properties": {
+		"folder": {
+			"name": "Joins"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_ipl_v_kohli",
+						"type": "DatasetReference"
+					},
+					"name": "vkholiDeliveries"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_ipl_matches",
+						"type": "DatasetReference"
+					},
+					"name": "iplMatches"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "filter2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          match_id as string,",
+				"          inning as string,",
+				"          batting_team as string,",
+				"          bowling_team as string,",
+				"          over as string,",
+				"          ball as string,",
+				"          batsman as string,",
+				"          bowler as string,",
+				"          Bowler_specilization as string,",
+				"          non_striker as string,",
+				"          batsman_runs as string,",
+				"          extra_runs as string,",
+				"          total_runs as string,",
+				"          extras_type as string,",
+				"          is_wicket as string,",
+				"          player_dismissed as string,",
+				"          dismissal_kind as string,",
+				"          fielder as string,",
+				"          Season as string,",
+				"          match_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> vkholiDeliveries",
+				"source(output(",
+				"          id as string,",
+				"          season as string,",
+				"          city as string,",
+				"          date as string,",
+				"          match_type as string,",
+				"          player_of_match as string,",
+				"          venue as string,",
+				"          team1 as string,",
+				"          team2 as string,",
+				"          toss_winner as string,",
+				"          toss_decision as string,",
+				"          winner as string,",
+				"          result as string,",
+				"          result_margin as string,",
+				"          target_runs as string,",
+				"          target_overs as string,",
+				"          super_over as string,",
+				"          method as string,",
+				"          umpire1 as string,",
+				"          umpire2 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     limit: 10,",
+				"     ignoreNoFilesFound: false) ~> iplMatches",
+				"filter2, filter1 join(match_id == id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"iplMatches filter(toInteger(id) == 335982) ~> filter1",
+				"vkholiDeliveries filter(toInteger(match_id) == 335982) ~> filter2",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

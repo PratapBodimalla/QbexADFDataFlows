@@ -1,0 +1,76 @@
+{
+	"name": "df_array_demo_001",
+	"properties": {
+		"folder": {
+			"name": "DataFlowFunctions"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_array_001",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1",
+					"description": "Players Who are common across Teams"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Company as string,",
+				"          CricketTeam as string,",
+				"          FootBallTeam as string,",
+				"          VolleyBallTeam as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 aggregate(groupBy(Company),",
+				"     each(match(right(name,4)=='Team'), $$+'_array' = collect(toString(byName($0))))) ~> aggregate1",
+				"aggregate1 derive(common_players = intersect(CricketTeam_array,FootBallTeam_array)) ~> derivedColumn1",
+				"derivedColumn1 derive(unnest = toString(unfold(common_players))) ~> derivedColumn2",
+				"derivedColumn2 derive(array_in_check = in(VolleyBallTeam_array,unnest),",
+				"          map = map(VolleyBallTeam_array,toString(#item + '_volleyBallPlayers'))) ~> derivedColumn3",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,180 @@
+{
+	"name": "pl_dynamic_expression",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_dynamic_expression",
+						"type": "DataFlowReference",
+						"parameters": {
+							"p_column_names_array": {
+								"value": "@variables('column_names_array')",
+								"type": "Expression"
+							},
+							"p_logic_array": {
+								"value": "@variables('formula_array')",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"sink2": {
+								"p_folder": "array002"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_array_002_meta",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "formula array",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "formula_array",
+								"value": {
+									"value": "@{item().logic}",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "column names array",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "formula array",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "column_names_array",
+								"value": {
+									"value": "@item().column_number",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_formula",
+					"value": {
+						"value": "@variables('formula_array')[4]",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"test": {
+				"type": "String"
+			},
+			"v_formula": {
+				"type": "String"
+			},
+			"column_names_array": {
+				"type": "Array"
+			},
+			"formula_array": {
+				"type": "Array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-04T05:36:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

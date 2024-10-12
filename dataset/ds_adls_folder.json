@@ -1,0 +1,57 @@
+{
+	"name": "ds_adls_folder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_qbexsilveradls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_folder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().p_folder",
+					"type": "Expression"
+				},
+				"fileSystem": "input"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "COUNTRY",
+				"type": "String"
+			},
+			{
+				"name": "COUNTRY CODE",
+				"type": "String"
+			},
+			{
+				"name": "ISO CODES",
+				"type": "String"
+			},
+			{
+				"name": "POPULATION",
+				"type": "String"
+			},
+			{
+				"name": "AREA KM2",
+				"type": "String"
+			},
+			{
+				"name": "GDP_USD",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

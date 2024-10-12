@@ -1,0 +1,19 @@
+{
+	"name": "ds_binary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "multitypefiles",
+				"container": "wildcards"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

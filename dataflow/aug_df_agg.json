@@ -1,0 +1,109 @@
+{
+	"name": "aug_df_agg",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "aug_ds_filter_1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "aggregate2"
+				},
+				{
+					"name": "aggregate3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          english_written_test_marks as string,",
+				"          telugu_written_test_marks as string,",
+				"          math_written_test_marks as string,",
+				"          science_written_test_marks as string,",
+				"          social_written_test_marks as string,",
+				"          english_practical_test_marks as string,",
+				"          telugu_practical_test_marks as string,",
+				"          math_practical_test_marks as string,",
+				"          science_practical_test_marks as string,",
+				"          social_practical_test_marks as string,",
+				"          english_marks as string,",
+				"          telugu_marks as string,",
+				"          math_marks as string,",
+				"          science_marks as string,",
+				"          social_marks as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 aggregate(groupBy(StudentIntial = left(student_name,1)),",
+				"     Total_math_marks = sum(toDouble(math_marks)),",
+				"          TotalMarks_A = sumIf(left(student_name,1) == 'A',toDouble(math_marks)),",
+				"          UniqueStudents = collectUnique(student_name)) ~> aggregate1",
+				"source1 aggregate(groupBy(class),",
+				"     each(match(right(name,19)=='_written_test_marks'), '_sum' + $$ = sum(toDouble($$) + toDouble(byName('social_practical_test_marks'))))) ~> aggregate2",
+				"source1 aggregate(groupBy(class),",
+				"     column1 = topN(student_name,toLong(math_marks), 5)) ~> aggregate3",
+				"aggregate3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"aggregate2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3"
+			]
+		}
+	}
+}

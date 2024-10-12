@@ -1,0 +1,57 @@
+{
+	"name": "flowlet123",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "aggregate3"
+				},
+				{
+					"name": "input1"
+				},
+				{
+					"name": "output1"
+				},
+				{
+					"name": "output2"
+				},
+				{
+					"name": "output3"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          english_written_test_marks as string,",
+				"          telugu_written_test_marks as string,",
+				"          math_written_test_marks as string,",
+				"          science_written_test_marks as string,",
+				"          social_written_test_marks as string,",
+				"          english_practical_test_marks as string,",
+				"          telugu_practical_test_marks as string,",
+				"          math_practical_test_marks as string,",
+				"          science_practical_test_marks as string,",
+				"          social_practical_test_marks as string,",
+				"          english_marks as string,",
+				"          telugu_marks as string,",
+				"          math_marks as string,",
+				"          science_marks as string,",
+				"          social_marks as string",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> input1",
+				"input1 aggregate(groupBy(class),",
+				"     column1 = topN(student_name,toLong(math_marks), 5)) ~> aggregate3",
+				"aggregate3 output() ~> output1",
+				"input1 output() ~> output2",
+				"input1 output() ~> output3"
+			]
+		}
+	}
+}

@@ -1,0 +1,61 @@
+{
+	"name": "dflow_select_001",
+	"properties": {
+		"description": "Early Loading schema, Auto mapping, Change Order, Basic Rule Based Mapping",
+		"folder": {
+			"name": "SelectTransformation"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_movies",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesDBcsv"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_select",
+						"type": "DatasetReference"
+					},
+					"name": "sinkADLS"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectTransformation"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          movie as string,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as string,",
+				"          Rating as string,",
+				"          {Rotton Tomato} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> MoviesDBcsv",
+				"MoviesDBcsv select(mapColumn(",
+				"          each(match(true()))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectTransformation",
+				"SelectTransformation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkADLS"
+			]
+		}
+	}
+}

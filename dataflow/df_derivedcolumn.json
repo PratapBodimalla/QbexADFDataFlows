@@ -1,0 +1,237 @@
+{
+	"name": "df_derivedcolumn",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "aug_ds_derived_column",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSalesData"
+				},
+				{
+					"dataset": {
+						"referenceName": "aug_ds_customer_master",
+						"type": "DatasetReference"
+					},
+					"name": "sourceCustomerData"
+				},
+				{
+					"dataset": {
+						"referenceName": "aug_ds_product_master",
+						"type": "DatasetReference"
+					},
+					"name": "sourceProductMaster"
+				},
+				{
+					"dataset": {
+						"referenceName": "aug_ds_derived_pattern",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"name": "sinkCustomerData"
+				},
+				{
+					"name": "sinkProductMaster"
+				}
+			],
+			"transformations": [
+				{
+					"name": "castSalesData"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"udfLibraries": [
+				{
+					"referenceName": "funMonthName",
+					"type": "DataFlowReference"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     p_formula as string ('Qty_Sold * Price')",
+				"}",
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount9 as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string,",
+				"          AmountFormatted as string,",
+				"          Amount13 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceSalesData",
+				"source(output(",
+				"          CustomerName as string,",
+				"          CustomerBucket as string,",
+				"          CustomerRegion as string,",
+				"          LessThanFullTruckLoad as string,",
+				"          YearOnYearVolumeIncrease as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceCustomerData",
+				"source(output(",
+				"          Product as string,",
+				"          ProductCategory as string,",
+				"          ProductSubCategory as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceProductMaster",
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          english_written_test_marks as string,",
+				"          telugu_written_test_marks as string,",
+				"          math_written_test_marks as string,",
+				"          science_written_test_marks as string,",
+				"          social_written_test_marks as string,",
+				"          english_practical_test_marks as string,",
+				"          telugu_practical_test_marks as string,",
+				"          math_practical_test_marks as string,",
+				"          science_practical_test_marks as string,",
+				"          social_practical_test_marks as string,",
+				"          english_marks as string,",
+				"          telugu_marks as string,",
+				"          math_marks as string,",
+				"          science_marks as string,",
+				"          social_marks as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"sourceSalesData cast(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as date 'dd-MM-yyyy',",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as integer,",
+				"          Qty_Sold as integer,",
+				"          Qty_Sold_Units as string,",
+				"          Amount9 as integer,",
+				"          Amount_Currency as string,",
+				"          ShipDate as date 'dd-MM-yyyy',",
+				"          AmountFormatted as string,",
+				"          Amount13 as string",
+				"     ),",
+				"     errors: false) ~> castSalesData",
+				"castSalesData derive(CustomerName = lower(CustomerName),",
+				"          Country = upper(Country),",
+				"          Product = toString(replace(Product,'-',' ')),",
+				"          City_in_scope = in(['Mumbai','Pune','Ahmedabad','Chennai'],City),",
+				"          CustomerBucket = sinkCustomerData#lookup(CustomerName).CustomerBucket,",
+				"          ProductCategory = sinkProductMaster#lookup(replace(Product,'-',' ')).ProductCategory,",
+				"          Price = expr($p_formula),",
+				"          Number_of_days = ShipDate - OrderDate,",
+				"          number_of_days_current_date = currentDate() - OrderDate,",
+				"          Year = year(OrderDate),",
+				"          Month = month(OrderDate),",
+				"          Day = dayOfMonth(OrderDate),",
+				"          Week = weekOfYear(OrderDate),",
+				"          MTD_sales = /* between(OrderDate,  toDate(toString(year(currentDate())) + '-' + toString(month(currentDate())) + '-' + '01','yyyy-MM-dd') , currentDate() ) */\r",
+				"\r",
+				"iif( between(OrderDate,  toDate(toString(year(currentDate())) + '-' + '09' + '-' + '01','yyyy-MM-dd') , currentDate() ) == true(), Amount9, 0),",
+				"          month_name = funGetMonthName(toString(month(OrderDate)))) ~> derivedColumn1",
+				"sourceSalesData, sourceCustomerData join(sourceSalesData@CustomerName == sourceCustomerData@CustomerName,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          CustomerName = sourceSalesData@CustomerName,",
+				"          City,",
+				"          Country,",
+				"          Product,",
+				"          Price,",
+				"          Qty_Sold,",
+				"          Qty_Sold_Units,",
+				"          Amount9,",
+				"          Amount_Currency,",
+				"          ShipDate,",
+				"          AmountFormatted,",
+				"          Amount13,",
+				"          CustomerBucket",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"sourceSalesData, sourceCustomerData lookup(sourceSalesData@CustomerName == sourceCustomerData@CustomerName,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"source1 derive(each(match(right(name,6)=='_marks'&&length(name)<15), $$ = case($0 == 'english_marks', toDouble(byName('english_written_test_marks')) + toDouble(byName('english_practical_test_marks')),\r",
+				"     $0 == 'telugu_marks', toDouble(byName('telugu_written_test_marks')) + toDouble(byName('telugu_practical_test_marks')),\r",
+				"     toDouble(byName('math_written_test_marks')) + toDouble(byName('math_practical_test_marks'))))) ~> derivedColumn2",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2) ~> sink1",
+				"sourceCustomerData sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     keys:['CustomerName'],",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sinkCustomerData",
+				"sourceProductMaster sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     keys:['Product'],",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> sinkProductMaster"
+			]
+		}
+	}
+}

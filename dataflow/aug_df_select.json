@@ -1,0 +1,253 @@
+{
+	"name": "aug_df_select",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_select_1_sales_order_aug",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSalesData"
+				},
+				{
+					"dataset": {
+						"referenceName": "aug_ds_2_sales_json",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSalesDataJson"
+				},
+				{
+					"dataset": {
+						"referenceName": "aug_ds_3_select_db",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "aug_ds_4_select_students",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
+				}
+			],
+			"transformations": [
+				{
+					"name": "castDataTypeConversion"
+				},
+				{
+					"name": "selectSalesData"
+				},
+				{
+					"name": "selectJSONFlatten"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceSalesData",
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          Product as string,",
+				"          sold_to_party as (CustomerName as string, address as (City as string, Country as string)),",
+				"          sales_amount as (Amount as integer, Currency as string),",
+				"          sales_quantities as (Qty_Sold as integer, Qty_Sold_Units as string)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> sourceSalesDataJson",
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as date,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as integer,",
+				"          Qty_Sold as integer,",
+				"          Qty_Sold_Units as string,",
+				"          Amount as integer,",
+				"          Amount_Currency as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          subject_1_written_marks as string,",
+				"          subject_2_written_marks as string,",
+				"          subject_3_written_marks as string,",
+				"          subject_4_written_marks as string,",
+				"          subject_5_written_marks as string,",
+				"          subject_1_practical_marks as string,",
+				"          subject_2_practical_marks as string,",
+				"          subject_3_practical_marks as string,",
+				"          subject_4_practical_marks as string,",
+				"          subject_5_practical_marks as string,",
+				"          subject_1_marks as string,",
+				"          subject_2_marks as string,",
+				"          subject_3_marks as string,",
+				"          subject_4_marks as string,",
+				"          subject_5_marks as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"sourceSalesData cast(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as date 'dd-MM-yyyy',",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as integer,",
+				"          Qty_Sold as integer '000',",
+				"          Qty_Sold_Units as string,",
+				"          Amount as integer '000',",
+				"          Amount_Currency as string,",
+				"          ShipDate as date 'dd-MM-yyyy'",
+				"     ),",
+				"     errors: false) ~> castDataTypeConversion",
+				"castDataTypeConversion select(mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          ShipDate,",
+				"          CustomerName,",
+				"          City,",
+				"          ProductName = Product,",
+				"          Price,",
+				"          QuatitySold = Qty_Sold,",
+				"          QuantitySoldUnits = Qty_Sold_Units,",
+				"          SalesAmount = Amount,",
+				"          SalesAmountCurrency = Amount_Currency",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectSalesData",
+				"sourceSalesDataJson select(mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          Product,",
+				"          CustomerName = sold_to_party.CustomerName,",
+				"          each(sold_to_party.address,match(true())),",
+				"          each(sales_amount,match(true())),",
+				"          each(sales_quantities,match(true()))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectJSONFlatten",
+				"source2 select(mapColumn(",
+				"          school,",
+				"          class,",
+				"          {student id},",
+				"          student_name,",
+				"          each(match(right(name,14)=='_written_marks'),",
+				"               replace($$,'_written_marks','_W_marks') = $$),",
+				"          each(match(right(name,16)=='_practical_marks'),",
+				"               replace($$,'_practical_marks','_P_marks') = $$),",
+				"          each(match(right(name,6)=='_marks'),",
+				"               replace($$,'_marks','_Total_marks') = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"selectSalesData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          ShipDate,",
+				"          CustomerName,",
+				"          City,",
+				"          ProductName,",
+				"          Price,",
+				"          QuatitySold,",
+				"          QuantitySoldUnits,",
+				"          SalesAmount,",
+				"          SalesAmountCurrency",
+				"     )) ~> sink1",
+				"selectJSONFlatten sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink4"
+			]
+		}
+	}
+}

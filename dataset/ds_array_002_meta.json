@@ -1,0 +1,41 @@
+{
+	"name": "ds_array_002_meta",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "array_demo_2_metadata_file.csv",
+				"container": "dataflow-functions"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\"",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "column_number",
+				"type": "String"
+			},
+			{
+				"name": "column_name",
+				"type": "String"
+			},
+			{
+				"name": "mapping",
+				"type": "String"
+			},
+			{
+				"name": "logic",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

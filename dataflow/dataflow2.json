@@ -1,0 +1,69 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_join_sales",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSales"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_sql_db",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceSales",
+				"sourceSales alterRow(deleteIf(year(toDate(OrderDate,'dd-MM-yyyy'))==2023),",
+				"     updateIf(year(toDate(OrderDate,'dd-MM-yyyy'))==2024)) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'SalesData',",
+				"     insertable: false,",
+				"     updateable: true,",
+				"     deletable: true,",
+				"     upsertable: false,",
+				"     keys:['SalesOrder'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

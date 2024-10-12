@@ -1,0 +1,126 @@
+{
+	"name": "dflow_derived_001",
+	"properties": {
+		"folder": {
+			"name": "DerivedColumn"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_ipl_v_kohli",
+						"type": "DatasetReference"
+					},
+					"name": "IPLVKohli"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectIPLKohli"
+				},
+				{
+					"name": "CalculateNewColumns"
+				},
+				{
+					"name": "Aggregate"
+				},
+				{
+					"name": "NotOuts"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          match_id as integer,",
+				"          inning as short,",
+				"          batting_team as string,",
+				"          bowling_team as string,",
+				"          over as short,",
+				"          ball as short,",
+				"          batsman as string,",
+				"          bowler as string,",
+				"          Bowler_specilization as string,",
+				"          non_striker as string,",
+				"          batsman_runs as short,",
+				"          extra_runs as short,",
+				"          total_runs as short,",
+				"          extras_type as string,",
+				"          is_wicket as boolean,",
+				"          player_dismissed as string,",
+				"          dismissal_kind as string,",
+				"          fielder as string,",
+				"          Season as string,",
+				"          match_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     dateFormats: ['dd-MM-yyyy']) ~> IPLVKohli",
+				"IPLVKohli select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectIPLKohli",
+				"SelectIPLKohli derive(is_out = iif(batsman==player_dismissed,1,0),",
+				"          Season = left(Season,(instr(Season,'/') - 1)),",
+				"          match_year = year(match_date),",
+				"          derived_season = 'Season_' + toString(year(match_date)),",
+				"          match_month = month(match_date),",
+				"          match_day = dayOfMonth(match_date),",
+				"          month_name = keyValues([1,2,3,4,5],['January','February','March','April','May'])[month(match_date)],",
+				"          regex_check = rlike(Bowler_specilization,`.* \\(.* \\)` ),",
+				"          bowler_type = regexExtract(Bowler_specilization,`\\(([^)]+)\\)`,1)) ~> CalculateNewColumns",
+				"SelectIPLKohli aggregate(groupBy(batsman,",
+				"          Season),",
+				"     number_of_dismissals = countIf(batsman==player_dismissed,player_dismissed),",
+				"          number_of_matches = countAllDistinct(match_id),",
+				"          number_of_innings = countAllDistinct(match_id,iif(batsman=='V Kohli',1,0))) ~> Aggregate",
+				"Aggregate derive(not_outs = number_of_matches - number_of_dismissals) ~> NotOuts",
+				"CalculateNewColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"NotOuts sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}

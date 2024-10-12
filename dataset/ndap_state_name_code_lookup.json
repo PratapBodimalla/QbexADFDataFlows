@@ -1,0 +1,60 @@
+{
+	"name": "ndap_state_name_code_lookup",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ndap"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "state_name_code_lookup.csv",
+				"container": "ndap"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Source",
+				"type": "String"
+			},
+			{
+				"name": "StateName",
+				"type": "String"
+			},
+			{
+				"name": "StateCode",
+				"type": "String"
+			},
+			{
+				"name": "Census2011Code",
+				"type": "String"
+			},
+			{
+				"name": "Census2001Code",
+				"type": "String"
+			},
+			{
+				"name": "State_UT",
+				"type": "String"
+			},
+			{
+				"name": "Synonyms",
+				"type": "String"
+			},
+			{
+				"name": "donotuse",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

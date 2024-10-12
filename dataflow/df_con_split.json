@@ -1,0 +1,136 @@
+{
+	"name": "df_con_split",
+	"properties": {
+		"folder": {
+			"name": "1.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_con_1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "union2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount9 as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string,",
+				"          AmountFormatted as string,",
+				"          Amount13 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 split(year(toDate(OrderDate,'dd-MM-yyyy')) == 2023,",
+				"     year(toDate(OrderDate,'dd-MM-yyyy')) == 2024,",
+				"     disjoint: false) ~> split1@(Stream2023, Stream2024, Others)",
+				"split1@Stream2024 select(mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          CustomerName,",
+				"          City,",
+				"          Country,",
+				"          Product,",
+				"          Price,",
+				"          Qty_Sold,",
+				"          Qty_Sold_Units,",
+				"          Amount9,",
+				"          Amount_Currency,",
+				"          ShipDate,",
+				"          AmountFormatted,",
+				"          Amount13",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@Others select(mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          CustomerName,",
+				"          City,",
+				"          Country,",
+				"          Product,",
+				"          Price,",
+				"          Qty_Sold,",
+				"          Qty_Sold_Units,",
+				"          Amount9,",
+				"          Amount_Currency,",
+				"          ShipDate,",
+				"          AmountFormatted,",
+				"          Amount13",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"split1@Stream2023 select(mapColumn(",
+				"          SalesOrder,",
+				"          OrderDate,",
+				"          CustomerName,",
+				"          City,",
+				"          Country,",
+				"          Product,",
+				"          Price,",
+				"          Qty_Sold,",
+				"          Qty_Sold_Units,",
+				"          Amount9,",
+				"          Amount_Currency,",
+				"          ShipDate,",
+				"          AmountFormatted,",
+				"          Amount13",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3, select1 union(byName: true)~> union1",
+				"union1, select2 union(byName: true)~> union2",
+				"union2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

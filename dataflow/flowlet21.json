@@ -1,0 +1,68 @@
+{
+	"name": "flowlet21",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "input1"
+				},
+				{
+					"name": "input2"
+				},
+				{
+					"name": "output1"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> input1",
+				"input(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          Product as string,",
+				"          sold_to_party as (CustomerName as string, address as (City as string, Country as string)),",
+				"          sales_amount as (Amount as integer, Currency as string),",
+				"          sales_quantities as (Qty_Sold as integer, Qty_Sold_Units as string)",
+				"     ),",
+				"     order: 1,",
+				"     allowSchemaDrift: true) ~> input2",
+				"input1 cast(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as date 'dd-MM-yyyy',",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as integer,",
+				"          Qty_Sold as integer '000',",
+				"          Qty_Sold_Units as string,",
+				"          Amount as integer '000',",
+				"          Amount_Currency as string,",
+				"          ShipDate as date 'dd-MM-yyyy'",
+				"     ),",
+				"     errors: false) ~> cast1",
+				"cast1 output() ~> output1"
+			]
+		}
+	}
+}

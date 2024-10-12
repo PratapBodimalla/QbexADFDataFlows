@@ -1,0 +1,68 @@
+{
+	"name": "ds_flatten",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "1.multi_nested_json_with_array.json",
+				"folderPath": "DataFlowTransformations/21.Flatten",
+				"fileSystem": "datasets"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"studentid": {
+					"type": "integer"
+				},
+				"studentname": {
+					"type": "string"
+				},
+				"age": {
+					"type": "integer"
+				},
+				"email": {
+					"type": "string"
+				},
+				"address": {
+					"type": "object",
+					"properties": {
+						"city": {
+							"type": "string"
+						},
+						"pincode": {
+							"type": "string"
+						},
+						"country": {
+							"type": "object",
+							"properties": {
+								"countrycode": {
+									"type": "string"
+								},
+								"countryname": {
+									"type": "string"
+								},
+								"country_iso_code": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"technologies_known": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

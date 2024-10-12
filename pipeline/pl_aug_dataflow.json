@@ -1,0 +1,428 @@
+{
+	"name": "pl_aug_dataflow",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataFlowSelect",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_select",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AugSelect001"
+							},
+							"sink2": {
+								"p_folder": "AugSelect002"
+							},
+							"sink3": {
+								"p_folder": "AugSelect003"
+							},
+							"sink4": {
+								"p_folder": "AugSelect004"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowFilter",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_aug_filter",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AugFilter001"
+							},
+							"sink2": {
+								"p_folder": "AugSort001"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowAggregation",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_agg",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AugAgg001"
+							},
+							"sink2": {
+								"p_folder": "AugAgg002"
+							},
+							"sink3": {
+								"p_folder": "AugAgg003"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowDerived",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_derivedcolumn",
+						"type": "DataFlowReference",
+						"parameters": {
+							"p_formula": "'Qty_Sold * Price'"
+						},
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AugDerived001"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowAssert",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_assert",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "Assert001"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SourceSink001",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_source_sink_001",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowCon",
+				"description": "Conditin and union",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_cond_split",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AugCon001"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowPivot",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_pivot",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AUGpivot001"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowUnpivot",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_unpivot",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AUGUNpivot001"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowJoin",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_join",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AUGJOIN001"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowLookup",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_lookup",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AUgLookup001"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DataFlowAugAssert",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_assert_001",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"p_folder": "AUGASSERT999"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "aug_df_sid",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"p_filename": "2_student_sid_001.csv"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "HighCompute",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-10-06T05:28:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

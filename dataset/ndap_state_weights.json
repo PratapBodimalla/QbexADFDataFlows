@@ -1,0 +1,176 @@
+{
+	"name": "ndap_state_weights",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ndap"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "state_weights.csv",
+				"container": "ndap"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SpecialCase",
+				"type": "String"
+			},
+			{
+				"name": "Category",
+				"type": "String"
+			},
+			{
+				"name": "Scenario",
+				"type": "String"
+			},
+			{
+				"name": "Country",
+				"type": "String"
+			},
+			{
+				"name": "StateKeyCode",
+				"type": "String"
+			},
+			{
+				"name": "StateCode",
+				"type": "String"
+			},
+			{
+				"name": "StateName",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulation",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationUrban",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationRural",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMale",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMaleUrban",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMaleRural",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationFemale",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationFemaleUrban",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationFemaleRural",
+				"type": "String"
+			},
+			{
+				"name": "NumberOfHouseholds",
+				"type": "String"
+			},
+			{
+				"name": "NumberOfHouseholdsUrban",
+				"type": "String"
+			},
+			{
+				"name": "NumberOfHouseholdsRural",
+				"type": "String"
+			},
+			{
+				"name": "LandArea",
+				"type": "String"
+			},
+			{
+				"name": "LandAreaUrban",
+				"type": "String"
+			},
+			{
+				"name": "LandAreaRural",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationUrbanMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationRuralMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMaleMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMaleUrbanMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationMaleRuralMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationFeMaleMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationFeMaleUrbanMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "TotalPopulationFeMaleRuralMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "NumberOfHouseholdsMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "NumberOfHouseholdsUrbanMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "NumberOfHouseholdsRuralMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "LandAreaMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "LandAreaUrbanMappingError%",
+				"type": "String"
+			},
+			{
+				"name": "LandAreaRuralMappingError%",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

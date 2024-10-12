@@ -1,0 +1,20 @@
+{
+	"name": "ds_adsl_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_qbexsilveradls",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "derived_json",
+				"fileSystem": "input"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

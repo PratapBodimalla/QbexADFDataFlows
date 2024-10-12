@@ -1,0 +1,102 @@
+{
+	"name": "flow_assert_001",
+	"properties": {
+		"folder": {
+			"name": "Assert"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_student_marks",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_student_marks",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "assert1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          {subject-1-marks} as string,",
+				"          {subject-2-marks} as string,",
+				"          {subject-3-marks} as string,",
+				"          {subject-4-marks} as string,",
+				"          {subject-5-marks} as string,",
+				"          {total-marks} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          {subject-1-marks} as string,",
+				"          {subject-2-marks} as string,",
+				"          {subject-3-marks} as string,",
+				"          {subject-4-marks} as string,",
+				"          {subject-5-marks} as string,",
+				"          {total-marks} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"filter1, source2 assert(expectTrue(toInteger(source1@{subject-1-marks}) == 100, false, 'assert1'),",
+				"     expectUnique(concat(source1@school,source1@class), false, 'assert2'),",
+				"     expectExists(source1@{student == ==, false, 'assert3')) ~> assert1",
+				"assert1 derive(is_error = isError(),",
+				"          has_error = hasError('assert1'),",
+				"          column1 = hasError('assert2'),",
+				"          column2 = assertErrorMessages()) ~> derivedColumn1",
+				"source1 filter(school == 'School_A' && class == '2') ~> filter1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,57 @@
+{
+	"name": "dflow_parse_001",
+	"properties": {
+		"folder": {
+			"name": "Parse"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_student_csv_with_json_string",
+						"type": "DatasetReference"
+					},
+					"name": "CSVFileWithJsonString"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "parse1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          studentid as string,",
+				"          studentname as string,",
+				"          age as string,",
+				"          email as string,",
+				"          address_details as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CSVFileWithJsonString",
+				"CSVFileWithJsonString parse(address_details = address_details ? (city as string,",
+				"          country as string),",
+				"     format: 'json',",
+				"     documentForm: 'singleDocument') ~> parse1",
+				"parse1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

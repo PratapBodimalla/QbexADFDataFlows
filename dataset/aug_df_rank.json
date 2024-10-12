@@ -1,0 +1,102 @@
+{
+	"name": "aug_df_rank",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "1_student_marks_for_rule_based_mapping.csv",
+				"folderPath": "DataFlowTransformations/7.Rank",
+				"fileSystem": "datasets"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "school",
+				"type": "String"
+			},
+			{
+				"name": "class",
+				"type": "String"
+			},
+			{
+				"name": "student id",
+				"type": "String"
+			},
+			{
+				"name": "student_name",
+				"type": "String"
+			},
+			{
+				"name": "subject_1_written_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_2_written_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_3_written_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_4_written_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_5_written_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_1_practical_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_2_practical_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_3_practical_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_4_practical_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_5_practical_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_1_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_2_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_3_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_4_marks",
+				"type": "String"
+			},
+			{
+				"name": "subject_5_marks",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

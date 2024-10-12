@@ -1,0 +1,52 @@
+{
+	"name": "dflow_select_002",
+	"properties": {
+		"description": "-- Infer data types\n-- Late Binding\n",
+		"folder": {
+			"name": "SelectTransformation"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_movies_no_schema",
+						"type": "DatasetReference"
+					},
+					"name": "moviesDBNoSchema"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_select",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectTransformation"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> moviesDBNoSchema",
+				"moviesDBNoSchema select(mapColumn(",
+				"          each(match(true()))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectTransformation",
+				"SelectTransformation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

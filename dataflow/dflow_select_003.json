@@ -1,0 +1,64 @@
+{
+	"name": "dflow_select_003",
+	"properties": {
+		"description": "-- Hierarchy Mapping",
+		"folder": {
+			"name": "SelectTransformation"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_nested_json",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_select",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          studentid as integer,",
+				"          studentname as string,",
+				"          age as integer,",
+				"          email as string,",
+				"          address as (city as string, country as string)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source1",
+				"source1 select(mapColumn(",
+				"          each(address,patternMatch(`.*`)),",
+				"          each(match(type=='integer'),",
+				"               $$+'_integer' = $$),",
+				"          each(patternMatch(`^e\\w*`),",
+				"               $$+'_prefix_e' = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,136 @@
+{
+	"name": "ndap_indicator_dimension",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_qbexblobstoragedemofiles",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ndap"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "indicator_dimension.csv",
+				"container": "ndap"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "source_code",
+				"type": "String"
+			},
+			{
+				"name": "source_table",
+				"type": "String"
+			},
+			{
+				"name": "src_column_name",
+				"type": "String"
+			},
+			{
+				"name": "column_name",
+				"type": "String"
+			},
+			{
+				"name": "longdescription",
+				"type": "String"
+			},
+			{
+				"name": "shortdescription",
+				"type": "String"
+			},
+			{
+				"name": "synonymns",
+				"type": "String"
+			},
+			{
+				"name": "hidden_flag",
+				"type": "String"
+			},
+			{
+				"name": "report_col_id",
+				"type": "String"
+			},
+			{
+				"name": "dimension_flag",
+				"type": "String"
+			},
+			{
+				"name": "dimension_type",
+				"type": "String"
+			},
+			{
+				"name": "reference_column",
+				"type": "String"
+			},
+			{
+				"name": "data_type",
+				"type": "String"
+			},
+			{
+				"name": "units",
+				"type": "String"
+			},
+			{
+				"name": "scaling_factor",
+				"type": "String"
+			},
+			{
+				"name": "aggregation_type_loc",
+				"type": "String"
+			},
+			{
+				"name": "aggregation_type_time",
+				"type": "String"
+			},
+			{
+				"name": "weighing_variable_name",
+				"type": "String"
+			},
+			{
+				"name": "weighing_variable_id",
+				"type": "String"
+			},
+			{
+				"name": "weighting_variable_availability",
+				"type": "String"
+			},
+			{
+				"name": "calculate_as_formula",
+				"type": "String"
+			},
+			{
+				"name": "UniqueKey",
+				"type": "String"
+			},
+			{
+				"name": "VariableType",
+				"type": "String"
+			},
+			{
+				"name": "NotSearchRelevant",
+				"type": "String"
+			},
+			{
+				"name": "label",
+				"type": "String"
+			},
+			{
+				"name": "UOM",
+				"type": "String"
+			},
+			{
+				"name": "Currency",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,75 @@
+{
+	"name": "aug_ds_2_sales_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "2_sales_orders.json",
+				"folderPath": "DataFlowTransformations/1.SelectTransformation",
+				"fileSystem": "datasets"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"SalesOrder": {
+					"type": "string"
+				},
+				"OrderDate": {
+					"type": "string"
+				},
+				"Product": {
+					"type": "string"
+				},
+				"sold_to_party": {
+					"type": "object",
+					"properties": {
+						"CustomerName": {
+							"type": "string"
+						},
+						"address": {
+							"type": "object",
+							"properties": {
+								"City": {
+									"type": "string"
+								},
+								"Country": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"sales_amount": {
+					"type": "object",
+					"properties": {
+						"Amount": {
+							"type": "integer"
+						},
+						"Currency": {
+							"type": "string"
+						}
+					}
+				},
+				"sales_quantities": {
+					"type": "object",
+					"properties": {
+						"Qty_Sold": {
+							"type": "integer"
+						},
+						"Qty_Sold_Units": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

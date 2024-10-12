@@ -1,0 +1,119 @@
+{
+	"name": "df_assert",
+	"properties": {
+		"folder": {
+			"name": "1.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_assert_sales",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSales"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_assert_customer",
+						"type": "DatasetReference"
+					},
+					"name": "sourceCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "assert1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceSales",
+				"source(output(",
+				"          CustomerName as string,",
+				"          CustomerBucket as string,",
+				"          CustomerRegion as string,",
+				"          LessThanFullTruckLoad as string,",
+				"          YearOnYearVolumeIncrease as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceCustomer",
+				"sourceSales cast(output(",
+				"          OrderDate as date 'dd-MM-yyyy'",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast1 derive(column1 = isError()) ~> derivedColumn1",
+				"sourceSales, sourceCustomer assert(expectTrue(!isNull(toDate(OrderDate,'dd-MM-yyyy')), false, 'valid_date', null, 'Check for Date Validity'),",
+				"     expectExists(sourceSales@CustomerName == sourceCustomer@CustomerName, false, 'Valid_Customer', null, 'Check for Valid Customer'),",
+				"     expectTrue(toInteger(Price) > 0, false, 'Valid_Price', null, 'Price can never be 0 or less than 0'),",
+				"     expectTrue(mod(toDouble(Qty_Sold),1) == 0, false, 'Valid_Qty', null, 'Qty cannot be Decimal'),",
+				"     expectTrue(in(['INR','EUR','USD'],Amount_Currency), false, 'valid_currency', null, 'check for valid Currency')) ~> assert1",
+				"assert1 split(!(isError()),",
+				"     disjoint: false) ~> split1@(SuccessRecords, ErrorRecords)",
+				"split1@ErrorRecords derive(column1 = assertErrorMessages()) ~> derivedColumn3",
+				"derivedColumn3 select(mapColumn(",
+				"          SalesOrder,",
+				"          ErrorMessages = column1",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"assert1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'outputs',",
+				"     assertFailure_folderPath: 'Assert001/Errors',",
+				"     ignoreAssertFailedRows: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,56 @@
+{
+	"name": "ds_flatten_002",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "2_multiple_objects_with_samepattern_array.json",
+				"folderPath": "DataFlowTransformations/21.Flatten",
+				"fileSystem": "datasets"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ordernumber": {
+					"type": "string"
+				},
+				"orderdate": {
+					"type": "string"
+				},
+				"orderlines": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"prod": {
+								"type": "string"
+							},
+							"price": {
+								"type": "integer"
+							}
+						}
+					}
+				},
+				"city": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"sanmateo": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

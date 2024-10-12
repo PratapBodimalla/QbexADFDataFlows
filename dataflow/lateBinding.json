@@ -1,0 +1,54 @@
+{
+	"name": "lateBinding",
+	"properties": {
+		"folder": {
+			"name": "Binding"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "studentMarks",
+						"type": "DatasetReference"
+					},
+					"name": "studenMarks"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "studentMarksADLS",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> studenMarks",
+				"studenMarks select(mapColumn(",
+				"          each(match(name!='total-marks'),",
+				"               $$+'_transformed' = $$),",
+				"          each(match(name=='total-marks'),",
+				"               'marks' = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

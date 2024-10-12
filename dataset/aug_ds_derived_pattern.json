@@ -1,0 +1,102 @@
+{
+	"name": "aug_ds_derived_pattern",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "2_student_marks_for_rule_based_mapping.csv",
+				"folderPath": "DataFlowTransformations/5.DerivedColumn",
+				"fileSystem": "datasets"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "school",
+				"type": "String"
+			},
+			{
+				"name": "class",
+				"type": "String"
+			},
+			{
+				"name": "student id",
+				"type": "String"
+			},
+			{
+				"name": "student_name",
+				"type": "String"
+			},
+			{
+				"name": "english_written_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "telugu_written_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "math_written_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "science_written_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "social_written_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "english_practical_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "telugu_practical_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "math_practical_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "science_practical_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "social_practical_test_marks",
+				"type": "String"
+			},
+			{
+				"name": "english_marks",
+				"type": "String"
+			},
+			{
+				"name": "telugu_marks",
+				"type": "String"
+			},
+			{
+				"name": "math_marks",
+				"type": "String"
+			},
+			{
+				"name": "science_marks",
+				"type": "String"
+			},
+			{
+				"name": "social_marks",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

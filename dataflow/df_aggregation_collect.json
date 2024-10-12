@@ -1,0 +1,82 @@
+{
+	"name": "df_aggregation_collect",
+	"properties": {
+		"folder": {
+			"name": "DataFlowFunctions"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_collect",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_folder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Company as string,",
+				"          Year as string,",
+				"          SalesPerson as string,",
+				"          FirstName as string,",
+				"          LastName as string,",
+				"          SalesAmount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 aggregate(groupBy(Year),",
+				"     collect = collect(SalesPerson),",
+				"          collect_unique = collectUnique(SalesPerson),",
+				"          collect_expression = collect(FirstName+LastName)\r",
+				"\r",
+				"/* concat, concatws \r",
+				"\r",
+				"concat(FirstName,LastName)\r",
+				"concatWS('.',FirstName,LastName)\r",
+				"can use + operator\r",
+				"*/,",
+				"          collect_object = collect(@(name=SalesPerson, sales=SalesAmount)),",
+				"          topN = topN(SalesPerson,toLong(SalesAmount),3)) ~> aggregate1",
+				"aggregate1 derive(first_item_of_array = collect_unique[1],",
+				"          object_sales = /* collect_object[1] */\r",
+				"collect_object[1].sales,",
+				"          object_name = collect_object[1].name) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COUNTRY as string,",
+				"          {COUNTRY CODE} as string,",
+				"          {ISO CODES} as string,",
+				"          POPULATION as string,",
+				"          {AREA KM2} as string,",
+				"          GDP_USD as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

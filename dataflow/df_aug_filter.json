@@ -1,0 +1,90 @@
+{
+	"name": "df_aug_filter",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "aug_ds_filter_1",
+						"type": "DatasetReference"
+					},
+					"name": "sourceStudentData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filteredStudentData"
+				},
+				{
+					"name": "sortedStudentData"
+				},
+				{
+					"name": "sort1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          school as string,",
+				"          class as string,",
+				"          {student id} as string,",
+				"          student_name as string,",
+				"          english_written_test_marks as string,",
+				"          telugu_written_test_marks as string,",
+				"          math_written_test_marks as string,",
+				"          science_written_test_marks as string,",
+				"          social_written_test_marks as string,",
+				"          english_practical_test_marks as string,",
+				"          telugu_practical_test_marks as string,",
+				"          math_practical_test_marks as string,",
+				"          science_practical_test_marks as string,",
+				"          social_practical_test_marks as string,",
+				"          english_marks as string,",
+				"          telugu_marks as string,",
+				"          math_marks as string,",
+				"          science_marks as string,",
+				"          social_marks as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceStudentData",
+				"sort1 filter(like(student_name,'A%') && toDouble(math_marks) > 79 && !isNull(school)) ~> filteredStudentData",
+				"sourceStudentData sort(desc(toDouble(english_marks) + toDouble(telugu_marks) + toDouble(math_marks), false)) ~> sortedStudentData",
+				"sourceStudentData sort(asc(student_name, true)) ~> sort1",
+				"filteredStudentData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"sortedStudentData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}

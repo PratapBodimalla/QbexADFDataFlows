@@ -1,0 +1,81 @@
+{
+	"name": "aug_df_cond_split",
+	"properties": {
+		"folder": {
+			"name": "2.DataFlowTransformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "aug_ds_con_split",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSalesData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_new_adls_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split20232024"
+				},
+				{
+					"name": "derivedColumn2023"
+				},
+				{
+					"name": "derivedColumn2024"
+				},
+				{
+					"name": "unionof202324"
+				},
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesOrder as string,",
+				"          OrderDate as string,",
+				"          CustomerName as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Product as string,",
+				"          Price as string,",
+				"          Qty_Sold as string,",
+				"          Qty_Sold_Units as string,",
+				"          Amount9 as string,",
+				"          Amount_Currency as string,",
+				"          ShipDate as string,",
+				"          AmountFormatted as string,",
+				"          Amount13 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceSalesData",
+				"sourceSalesData split(year(toDate(OrderDate,'dd-MM-yyyy')) == 2023,",
+				"     year(toDate(OrderDate,'dd-MM-yyyy')) == 2024,",
+				"     disjoint: false) ~> split20232024@(Sales2023, Sales2024, Others)",
+				"split20232024@Sales2023 derive(Year2023 = year(toDate(OrderDate,'dd-MM-yyyy'))) ~> derivedColumn2023",
+				"split20232024@Sales2024 derive(Year2024 = year(toDate(OrderDate,'dd-MM-yyyy'))) ~> derivedColumn2024",
+				"derivedColumn2023, derivedColumn2024 union(byName: true)~> unionof202324",
+				"unionof202324, split20232024@Others union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
